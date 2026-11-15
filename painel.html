@@ -141,6 +141,7 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
       <div class="lab">Vendas do lançamento por cor</div>
       <div class="rows" id="soldc"></div>
       <ul class="sales" id="sales"></ul>
+      <p class="hint" id="hookSt" style="margin-top:12px"></p>
     </div>
   </div>
 
@@ -192,6 +193,9 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     for(i=0;i<24;i++){ var v=hs[(i<10?'0':'')+i]||0; html+='<div title="'+i+'h: '+v+' visitas" class="'+(i===nowH?'now':'')+'" style="height:'+(v/max*100)+'%"></div>' }
     $('hours').innerHTML=html;
     $('days').innerHTML=d.days.map(function(x){return '<tr><td>'+fmtDay(x.day)+'</td><td>'+n(x.uv)+'</td><td>'+n(x.pv)+'</td><td>'+n(x.peak)+'</td><td>'+n(x.ev_buy)+'</td><td>'+n(x.ev_cart)+'</td><td>'+n(x.ev_wa)+'</td></tr>'}).join('');
+    var R={'sem-chave':'chave secreta ainda não configurada, venda não contada','assinatura-invalida':'assinatura inválida, venda não contada','nao-pago':'pedido ainda não pago','dup':'pedido já contado','no-launch-items':'pedido sem o Aviator','not-counted':'cancelamento de pedido que não estava contado','erro-interno':'erro ao gravar'};
+    var hk=(d.hook||[])[0];
+    $('hookSt').textContent=hk?('Última chamada da Yampi: '+new Date(hk.at).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit',timeZone:'America/Sao_Paulo'})+(hk.n?' · pedido '+hk.n:'')+' · '+(R[hk.r]||hk.r)):'A Yampi ainda não enviou nenhum pedido para o painel.';
     renderMap(d);
     $('upd').classList.remove('off');
     $('updT').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});

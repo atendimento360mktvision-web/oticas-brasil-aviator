@@ -1,7 +1,8 @@
 // Webhook da Yampi: conta os pares do lançamento a cada pedido pago.
 // Só conta pedidos assinados com YAMPI_WEBHOOK_SECRET (HMAC SHA256 em base64, header X-Yampi-Hmac-SHA256).
 const crypto = require('crypto');
-const { cmd, pipe, readRaw } = require('./_lib/kv');
+const { cmd, readRaw } = require('./_lib/kv');
+const { addOrder, removeOrder, logHook } = require('./_lib/sales');
 
 // Código do link de compra (token do SKU na Yampi) e sufixo do código Ray-Ban de cada cor
 const TOKENS = { P383GE83XH: 'mg', PC3CFCG8KG: 'm1', NVPX5ZAC4J: 'mh' };
@@ -45,52 +46,36 @@ function send(res, code, obj) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 200, { ok: true });
   const raw = await readRaw(req);
+  let body = null;
+  try { body = JSON.parse(raw); } catch (e) {}
+  const ev = String((body && body.event) || '').slice(0, 40);
+  const o = (body && body.resource) || {};
+  const id = String(o.id || o.number || '');
+  const num = String(o.number || id).slice(0, 30);
+  const reply = async (code, obj) => { await logHook({ ev, n: num, r: obj.reason || obj.ignored || (obj.added ? 'contou ' + obj.added : obj.removed ? 'descontou ' + obj.removed : (obj.ok ? 'ok' : 'erro')) }); return send(res, code, obj); };
+
   const secret = process.env.YAMPI_WEBHOOK_SECRET;
   // Antes de a chave estar configurada, responde 200 para a Yampi conseguir salvar o webhook, mas não conta nada
-  if (!secret) return send(res, 200, { ok: false, reason: 'secret-not-set' });
-  if (!validSig(raw, req.headers['x-yampi-hmac-sha256'], secret)) return send(res, 401, { ok: false });
-
-  let body;
-  try { body = JSON.parse(raw); } catch (e) { return send(res, 200, { ok: true, ignored: 'json' }); }
-  const ev = String(body.event || '');
-  const o = body.resource || {};
-  const id = String(o.id || o.number || '');
-  if (!id) return send(res, 200, { ok: true, ignored: 'no-order' });
+  if (!secret) return reply(200, { ok: false, reason: 'sem-chave' });
+  if (!validSig(raw, req.headers['x-yampi-hmac-sha256'], secret)) return reply(401, { ok: false, reason: 'assinatura-invalida' });
+  if (!body) return reply(200, { ok: true, ignored: 'json' });
+  if (!id) return reply(200, { ok: true, ignored: 'sem-pedido' });
 
   try {
     const status = String((o.status && o.status.data && o.status.data.alias) || '');
-    const prev = await cmd(['HGET', 'orders', id]);
-
-    if (CANCEL.test(ev) || CANCEL.test(status)) {
-      if (!prev) return send(res, 200, { ok: true, ignored: 'not-counted' });
-      const p = JSON.parse(prev);
-      const list = [['HDEL', 'orders', id], ['DECRBY', 'sold', p.q]];
-      Object.keys(p.c).forEach(k => list.push(['HINCRBY', 'soldc', k, -p.c[k]]));
-      list.push(['LPUSH', 'sales', JSON.stringify({ id: o.number || id, q: -p.q, c: p.c, at: Date.now(), x: 'cancelado' })], ['LTRIM', 'sales', 0, 99]);
-      await pipe(list);
-      return send(res, 200, { ok: true, removed: p.q });
-    }
+    if (CANCEL.test(ev) || CANCEL.test(status)) return reply(200, await removeOrder(id, num));
 
     const paid = ev === 'order.paid' || /paid|aprov|pago|invoiced|faturad|shipped|enviad|deliver|entreg/i.test(status);
-    if (!paid || prev) return send(res, 200, { ok: true, ignored: prev ? 'dup' : 'not-paid' });
+    if (!paid) return reply(200, { ok: true, ignored: 'nao-pago' });
 
     const items = (o.items && o.items.data) || o.items || [];
-    const c = {}; let q = 0;
+    const c = {};
     (Array.isArray(items) ? items : []).forEach(it => {
       const k = colorOf(it); if (!k) return;
-      const n = Math.max(1, parseInt(it.quantity, 10) || 1);
-      c[k] = (c[k] || 0) + n; q += n;
+      c[k] = (c[k] || 0) + Math.max(1, parseInt(it.quantity, 10) || 1);
     });
-    if (!q) return send(res, 200, { ok: true, ignored: 'no-launch-items' });
-
-    const set = await cmd(['HSETNX', 'orders', id, JSON.stringify({ q, c })]);
-    if (!set) return send(res, 200, { ok: true, ignored: 'dup' });
-    const list = [['INCRBY', 'sold', q]];
-    Object.keys(c).forEach(k => list.push(['HINCRBY', 'soldc', k, c[k]]));
-    list.push(['LPUSH', 'sales', JSON.stringify({ id: o.number || id, q, c, at: Date.now() })], ['LTRIM', 'sales', 0, 99]);
-    await pipe(list);
-    return send(res, 200, { ok: true, added: q, colors: Object.keys(c).map(k => NAMES[k] || k) });
+    return reply(200, await addOrder(id, num, c));
   } catch (e) {
-    return send(res, 500, { ok: false });
+    return reply(500, { ok: false, reason: 'erro-interno' });
   }
 };
