@@ -43,6 +43,10 @@ module.exports = async (req, res) => {
   try {
     let b = {};
     try { b = JSON.parse(await readRaw(req) || '{}'); } catch (e) { b = {}; }
+    // Robôs e geradores de prévia (Vercel, Google, Facebook) não contam como pessoas
+    if (/bot|crawl|spider|headless|lighthouse|vercel|facebookexternalhit|preview|pagespeed|gtmetrix/i.test(req.headers['user-agent'] || '')) {
+      res.setHeader('Content-Type', 'application/json'); return res.end(JSON.stringify({ live: 0, sold: 0 }));
+    }
     const v = String(b.v || '').replace(/[^a-zA-Z0-9]/g, '').slice(0, 32);
     if (v.length < 8) { res.statusCode = 400; return res.end(); }
     const { day, hour } = brt();

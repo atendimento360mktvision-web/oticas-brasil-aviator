@@ -223,12 +223,12 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     if(!map)return;
     layerToday.clearLayers(); layerOnline.clearLayers();
     var max=Math.max.apply(null,(d.cities||[]).map(function(c){return c.n}).concat([1])), pts=[];
-    (d.cities||[]).forEach(function(c){ if(c.lat==null)return; pts.push([c.lat,c.lon]);
+    (d.cities||[]).forEach(function(c){ if(c.lat==null)return; if(c.cc==='BR')pts.push([c.lat,c.lon]);
       L.circleMarker([c.lat,c.lon],{radius:4+Math.sqrt(c.n/max)*14,color:'#241E33',weight:1,fillColor:'#241E33',fillOpacity:.28}).bindTooltip(esc(c.city)+(c.uf?' · '+esc(c.uf):'')+': '+n(c.n)+(c.n===1?' visitante hoje':' visitantes hoje')).addTo(layerToday) });
-    (d.online||[]).forEach(function(c){ if(c.lat==null)return; pts.push([c.lat,c.lon]); var sz=Math.min(16+c.n*3,40);
+    (d.online||[]).forEach(function(c){ if(c.lat==null)return; if(c.cc==='BR')pts.push([c.lat,c.lon]); var sz=Math.min(16+c.n*3,40);
       L.marker([c.lat,c.lon],{icon:L.divIcon({className:'pin',html:'<b style="width:'+sz+'px;height:'+sz+'px"></b>'+(c.n>1?'<em>'+c.n+'</em>':''),iconSize:[0,0]}),zIndexOffset:1000})
        .bindTooltip(esc(c.city)+(c.uf?' · '+esc(c.uf):'')+': '+c.n+(c.n===1?' pessoa agora':' pessoas agora')).addTo(layerOnline) });
-    if(!fitted&&pts.length>1){ fitted=true; map.fitBounds(pts,{paddingTopLeft:[innerWidth>860?320:40,60],paddingBottomRight:[60,60],maxZoom:6}) }
+    if(!fitted&&pts.length>2){ fitted=true; map.fitBounds(pts,{paddingTopLeft:[innerWidth>860?320:40,60],paddingBottomRight:[60,60],maxZoom:6}) }
   }
   function load(){
     fetch('/api/stats',{headers:{'x-k':k},cache:'no-store'}).then(function(r){
