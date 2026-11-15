@@ -935,7 +935,7 @@ fbq('track','PageView');
   },true);
 
   // WhatsApp: fechar venda
-  var WA_NUM='556282820123';
+  var WA_NUM='5562985823369';
   function waUrl(t){ return 'https://wa.me/'+WA_NUM+'?text='+encodeURIComponent(t) }
   function waOne(k){ var d=data[k], m=META[k]; return 'Olá! Vim pela página do lançamento e quero comprar o Ray-Ban Aviator RB3791 na cor '+d.name+' ('+m.cd.split('· ')[1]+'), no valor de R$ 1.410,00. Pode me ajudar a finalizar o pedido?' }
   function waCart(){ var n=0, lines=ORDER.filter(function(k){return cart[k]}).map(function(k){ n+=cart[k]; return '• '+cart[k]+'x Ray-Ban Aviator RB3791 '+data[k].name+' ('+META[k].cd.split('· ')[1]+')' });
