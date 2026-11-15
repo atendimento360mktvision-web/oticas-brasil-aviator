@@ -427,6 +427,14 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .photo img{transform:none}
 }
 </style>
+<!-- Meta Pixel -->
+<script>
+!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','3053037671700349');
+fbq('track','PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt="" src="https://www.facebook.com/tr?id=3053037671700349&ev=PageView&noscript=1"></noscript>
+<!-- End Meta Pixel -->
 </head>
 <body>
 <script>document.documentElement.classList.add('js')</script>
@@ -813,7 +821,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   function addCart(k){ cart[k]=Math.min(10,(cart[k]||0)+1); save(); renderCart(true); openCart() }
   document.addEventListener('click',function(e){
     var t=e.target.closest('[data-add],[data-addchip],[data-q],[data-opencart],[data-closecart]'); if(!t)return;
-    if(t.dataset.add){ e.preventDefault(); addCart(t.dataset.add==='current'?cur:t.dataset.add) }
+    if(t.dataset.add){ e.preventDefault(); addCart(t.dataset.add) }
     else if(t.dataset.addchip){ cart[t.dataset.addchip]=Math.min(10,cart[t.dataset.addchip]+1); save(); renderCart(true) }
     else if(t.dataset.q){ var k=t.dataset.k; cart[k]=Math.max(0,Math.min(10,cart[k]+(+t.dataset.q))); save(); renderCart(true) }
     else if(t.hasAttribute('data-opencart')){ renderCart(); openCart() }
@@ -822,6 +830,20 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   ov.addEventListener('click',closeCart);
   addEventListener('keydown',function(e){ if(e.key==='Escape'&&cartEl.classList.contains('open'))closeCart() });
   renderCart();
+
+  // Meta Pixel: eventos de venda
+  var SKU={mh:'RB3791-001MH',mg:'RB3791-001MG',m1:'RB3791-003M1'};
+  function px(ev,params){ try{ if(window.fbq) fbq('track',ev,params) }catch(e){} }
+  function contents(map){ return ORDER.filter(function(k){return map[k]}).map(function(k){return {id:SKU[k],quantity:map[k]}}) }
+  function evParams(map){ var c=contents(map), n=c.reduce(function(a,b){return a+b.quantity},0); return {content_ids:c.map(function(x){return x.id}),contents:c,content_type:'product',content_name:'Ray-Ban Aviator RB3791',num_items:n,value:n*PRICE,currency:'BRL'} }
+  px('ViewContent',{content_ids:[SKU.mh,SKU.mg,SKU.m1],content_type:'product',content_name:'Ray-Ban Aviator RB3791',value:PRICE,currency:'BRL'});
+  var _addCart=addCart; addCart=function(k){ k=(k==='current'?cur:k); var m={}; m[k]=1; px('AddToCart',evParams(m)); _addCart(k) };
+  document.addEventListener('click',function(e){
+    var ch=e.target.closest('[data-addchip]'); if(ch){ var m={}; m[ch.dataset.addchip]=1; px('AddToCart',evParams(m)); return }
+    var a=e.target.closest('a[href*="seguro.lancamentooculosnayma.com/r/"]'); if(!a)return;
+    var map={}; a.getAttribute('href').split('/r/')[1].split(',').forEach(function(p){ var q=p.split(':'); ORDER.forEach(function(k){ if(CODES[k]===q[0]) map[k]=(+q[1]||1) }) });
+    px('InitiateCheckout',evParams(map));
+  },true);
 
   // reveals
   var rv=$$('.rv');
