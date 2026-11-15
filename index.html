@@ -83,6 +83,22 @@ em{font-style:italic}
 .price .p{font-size:14px;color:rgb(var(--ink)/.66)}
 .price .p b{color:rgb(var(--ink));font-weight:600}
 .ctas{display:flex;gap:12px;flex-wrap:wrap}
+.live{display:flex;align-items:center;gap:9px;flex-wrap:wrap;font-size:13.5px;line-height:1.35;color:rgb(var(--ink)/.78);margin:-4px 0 20px;opacity:0;transform:translateY(4px);transition:opacity .6s var(--ease),transform .6s var(--ease)}
+.live.on{opacity:1;transform:none}
+.live[hidden]{display:none}
+.live b{color:rgb(var(--ink));font-weight:600}
+.live .pulse{position:relative;width:8px;height:8px;border-radius:50%;background:#1F9D55;flex:none}
+.live .pulse::after{content:"";position:absolute;inset:-4px;border-radius:50%;border:1.5px solid #1F9D55;opacity:.6;animation:livep 1.8s ease-out infinite}
+@keyframes livep{0%{transform:scale(.5);opacity:.7}100%{transform:scale(1.6);opacity:0}}
+.live .sep{opacity:.4}
+@media (max-width:520px){.live .lg{display:none}.live{font-size:13px;gap:7px}}
+.live [hidden]{display:none}
+.dark .live{color:rgba(247,244,238,.78);margin:-8px 0 26px}
+.dark .live b{color:#fff}
+.dark .live .pulse{background:#5BD68A}.dark .live .pulse::after{border-color:#5BD68A}
+.trust{display:flex;align-items:center;gap:8px;margin:14px 0 0;font-size:13px;color:rgb(var(--ink)/.6)}
+.trust svg{width:15px;height:15px;flex:none}
+@media (prefers-reduced-motion:reduce){.live .pulse::after{animation:none}}
 
 .stage{position:relative;display:flex;flex-direction:column;align-items:center}
 .ghost{position:absolute;left:50%;top:60%;font-family:var(--serif);font-style:italic;font-size:clamp(130px,17vw,270px);line-height:.8;letter-spacing:-.04em;color:rgb(var(--ink)/.055);white-space:nowrap;pointer-events:none;user-select:none;transform:translate(-50%,-50%)}
@@ -385,6 +401,8 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .hero h1{order:3;margin-bottom:6px}
   .stage{order:4;margin-top:0}
   .hero .price{order:5;margin:26px 0 12px}
+  .hero .live{order:5;margin:0 0 4px}
+  .hero .trust{order:7;margin-top:12px}
   .hero .sub{order:6;margin-bottom:22px}
   .hero .ctas{order:7}
   .seesun{order:8;align-self:flex-start}
@@ -499,12 +517,14 @@ fbq('track','PageView');
       <h1><span class="ln"><span style="--d:.25s">Luxo que muda</span></span><span class="ln"><span style="--d:.37s">com a <em>luz.</em></span></span></h1>
       
       <div class="price fx" style="--d:.68s"><span class="v">R$ 1.410,00</span><span class="p">ou <b>10x de R$ 141,00</b> sem juros</span></div>
+      <div class="live" data-live hidden aria-live="polite"><span class="pulse" aria-hidden="true"></span><span data-live-on hidden><b data-live-n></b> vendo<span class="lg"> o lançamento</span> agora</span><span class="sep" data-live-sep hidden>·</span><span data-sold-on hidden><b data-sold-n></b> já vendidos</span></div>
       <p class="sub fx" style="--d:.74s">Acabamento premium, metal em dourado ou prata e o desenho aviador que atravessa gerações. Um Ray-Ban original para quem não abre mão de exclusividade.</p>
       <div class="ctas fx" style="--d:.8s">
         <a class="btn btn-primary" id="buyHero" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">Comprar agora<span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
         <button class="btn btn-ghost add-cart" type="button" data-add="current"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Adicionar ao carrinho</button>
         <a class="btn btn-wa wa-sale" data-wa="current" href="#" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 1.8 3.6 3.6 4.4l1.2-1.1 1.7.8-.4 1.6c-3.2.2-6.6-3.1-6.5-6.4l1.6-.4.8 1.7z" fill="currentColor"/></svg>Comprar pelo WhatsApp</a>
       </div>
+      <p class="trust fx" style="--d:.86s"><svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2.5 6.5a5.5 5.5 0 0 1 10-2.6M13.5 9.5a5.5 5.5 0 0 1-10 2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M12.8 1.6v2.6h-2.6M3.2 14.4v-2.6h2.6" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Troca garantida em até 7 dias após o recebimento</p>
       <a class="seesun fx" style="--d:.9s" href="#no-sol"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg>Ver a lente mudar no sol</a>
     </div>
 
@@ -660,7 +680,7 @@ fbq('track','PageView');
     </div>
     <ul class="rlist">
       <li class="rv"><span class="ix">01</span><div><h3>Ray-Ban original</h3><p>Todos os modelos do lançamento são originais Ray-Ban, com a procedência de uma ótica com lojas físicas em Inhumas e Itaberaí.</p></div></li>
-      <li class="rv" style="--d:.08s"><span class="ix">02</span><div><h3>Envio rápido e garantido</h3><p>Mandamos para todo o Brasil. Você compra de onde estiver e recebe em casa, com a mesma atenção de quem vem até a loja.</p></div></li>
+      <li class="rv" style="--d:.08s"><span class="ix">02</span><div><h3>Envio rápido e garantido</h3><p>Mandamos para todo o Brasil. Você compra de onde estiver e recebe em casa, com a mesma atenção de quem vem até a loja. E a troca é garantida em até 7 dias após o recebimento.</p></div></li>
       <li class="rv" style="--d:.16s"><span class="ix">03</span><div><h3>Pagamento do seu jeito</h3><p>Parcelamento em até 10x sem juros no cartão e loja com tecnologia 100% segura.</p></div></li>
     </ul>
   </div>
@@ -682,10 +702,12 @@ fbq('track','PageView');
         <span class="eyebrow line rv">Lançamento Ray-Ban Aviator RB3791</span>
         <h2 class="h2 rv" style="--d:.08s">Escolha a sua cor e garanta o seu <em>aviador.</em></h2>
         <div class="close-price rv" style="--d:.16s"><span class="v">R$ 1.410,00</span><span class="p">ou <b>10x de R$ 141,00</b> sem juros</span></div>
+        <div class="live" data-live hidden aria-live="polite"><span class="pulse" aria-hidden="true"></span><span data-live-on hidden><b data-live-n></b> vendo<span class="lg"> o lançamento</span> agora</span><span class="sep" data-live-sep hidden>·</span><span data-sold-on hidden><b data-sold-n></b> já vendidos</span></div>
         <div class="close-ctas rv" style="--d:.22s"><a class="btn btn-lime" id="buyClose" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1"><span data-buylabel>Comprar Âmbar agora</span><span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><button class="btn btn-ghost-dark add-cart" type="button" data-add="current"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Adicionar ao carrinho</button><a class="btn btn-wa-dark wa-sale" data-wa="current" href="#" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 1.8 3.6 3.6 4.4l1.2-1.1 1.7.8-.4 1.6c-3.2.2-6.6-3.1-6.5-6.4l1.6-.4.8 1.7z" fill="currentColor"/></svg>Comprar pelo WhatsApp</a></div>
         <ul class="ticks rv" style="--d:.3s">
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Ray-Ban original</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Envio rápido e garantido para todo o Brasil</li>
+          <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Troca garantida em até 7 dias após o recebimento</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Loja com tecnologia 100% segura</li>
         </ul>
       </div>
@@ -739,7 +761,7 @@ fbq('track','PageView');
   <div class="cart-foot"><div class="cart-total"><span>Total</span><b id="cartTotal">R$ 0,00</b></div><p class="cart-inst" id="cartInst">ou 10x sem juros</p>
     <a class="btn btn-lime cart-go" id="cartGo" href="#">Finalizar compra<span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     <a class="btn btn-wa cart-wa wa-sale" id="cartWa" data-wa="cart" href="#" target="_blank" rel="noopener"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 9.5c.3 1.8 1.8 3.6 3.6 4.4l1.2-1.1 1.7.8-.4 1.6c-3.2.2-6.6-3.1-6.5-6.4l1.6-.4.8 1.7z" fill="currentColor"/></svg>Finalizar pelo WhatsApp</a>
-    <p class="cart-note">Pagamento 100% seguro na loja Óticas Brasil.</p></div>
+    <p class="cart-note">Pagamento 100% seguro na loja Óticas Brasil. Troca garantida em até 7 dias.</p></div>
 </aside>
 
 <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Stories do lançamento">
@@ -927,6 +949,39 @@ fbq('track','PageView');
   $$('.sw,.sw-mini button').forEach(function(sw){ sw.addEventListener('click',function(){ updateWa() }) });
   document.addEventListener('click',function(e){ var a=e.target.closest('.wa-sale'); if(!a)return; try{ if(window.fbq) fbq('track','Contact',{content_name:'Ray-Ban Aviator RB3791',currency:'BRL'}) }catch(err){} },true);
   updateWa();
+
+  // Ao vivo: pessoas na página agora (número real) e pares vendidos (pedidos pagos na Yampi)
+  var LIVE_MIN=3, SOLD_MIN=3, vid;
+  try{ vid=localStorage.getItem('ob_vid'); if(!vid){ vid=(Date.now().toString(36)+Math.random().toString(36).slice(2,12)).replace(/[^a-z0-9]/g,''); localStorage.setItem('ob_vid',vid) } }catch(e){ vid=(Date.now().toString(36)+Math.random().toString(36).slice(2,12)) }
+  function api(body){ return fetch('/api/live',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),keepalive:true}) }
+  function track(e){ try{ api({v:vid,t:'ev',e:e}).catch(function(){}) }catch(err){} }
+  function plural(n,a,b){ return n+' '+(n===1?a:b) }
+  function showLive(d){
+    var l=d.live||0, s=d.sold||0, okL=l>=LIVE_MIN, okS=s>=SOLD_MIN;
+    $$('[data-live]').forEach(function(box){
+      box.querySelector('[data-live-n]').textContent=plural(l,'pessoa','pessoas');
+      box.querySelector('[data-sold-n]').textContent=plural(s,'par','pares');
+      box.querySelector('[data-live-on]').hidden=!okL;
+      box.querySelector('[data-sold-on]').hidden=!okS;
+      box.querySelector('[data-live-sep]').hidden=!(okL&&okS);
+      if(okL||okS){ if(box.hidden){ box.hidden=false; requestAnimationFrame(function(){box.classList.add('on')}) } }
+      else { box.classList.remove('on'); box.hidden=true }
+    });
+  }
+  var hbT, live0=location.protocol.indexOf('http')===0;
+  function beat(t){ if(!live0)return; api({v:vid,t:t}).then(function(r){return r.json()}).then(showLive).catch(function(){}) }
+  function loop(){ clearInterval(hbT); hbT=setInterval(function(){ if(!document.hidden) beat('hb') },30000) }
+  beat('pv'); loop();
+  document.addEventListener('visibilitychange',function(){ if(!document.hidden){ beat('hb'); loop() } });
+  // eventos para o painel
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    var sw=t.closest('.sw,.sw-mini button'); if(sw&&sw.dataset.k){ track('cor_'+sw.dataset.k); return }
+    if(t.closest('[data-add],[data-addchip]')){ track('cart'); return }
+    if(t.closest('a[href*="seguro.lancamentooculosnayma.com/r/"]')){ track('buy'); return }
+    if(t.closest('.wa-sale,#cartWa')){ track('wa'); return }
+    if(t.closest('.story')){ track('story'); return }
+  },true);
 
   // reveals
   var rv=$$('.rv');
