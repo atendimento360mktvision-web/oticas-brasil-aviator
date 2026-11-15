@@ -1,6 +1,6 @@
 // Dados do painel. Protegido pela chave PAINEL_TOKEN (header x-k).
 const crypto = require('crypto');
-const { pipe, brt } = require('./_lib/kv');
+const { cmd, pipe, brt } = require('./_lib/kv');
 
 function same(a, b) {
   const x = Buffer.from(String(a)), y = Buffer.from(String(b));
@@ -28,10 +28,18 @@ module.exports = async (req, res) => {
       ['GET', 'sold'],
       ['HGETALL', 'soldc'],
       ['LRANGE', 'sales', 0, 19],
-      ['HGETALL', 'h:' + today]
+      ['HGETALL', 'h:' + today],
+      ['ZRANGEBYSCORE', 'live', now - 70000, '+inf', 'LIMIT', 0, 1000],
+      ['HGETALL', 'c:' + today]
     ];
+    const B = list.length;
     days.forEach(d => { list.push(['HGETALL', 'd:' + d]); list.push(['PFCOUNT', 'uv:' + d]); });
     const r = await pipe(list);
+    const members = r[5] || [];
+    const geos = members.length ? (await cmd(['HMGET', 'lg', ...members])) : [];
+    const online = {};
+    geos.forEach(g => { const k = g || 'Desconhecida||||'; online[k] = (online[k] || 0) + 1; });
+    const toCity = (k, n) => { const p = k.split('|'); return { city: p[0] || 'Desconhecida', uf: p[1] || '', cc: p[2] || '', lat: p[3] === '' || p[3] === undefined ? null : Number(p[3]), lon: p[4] === '' || p[4] === undefined ? null : Number(p[4]), n: Number(n) || 0 }; };
     const out = {
       now, today,
       live: Number(r[0]) || 0,
@@ -39,7 +47,9 @@ module.exports = async (req, res) => {
       soldByColor: hgetall(r[2]),
       sales: (r[3] || []).map(s => { try { return JSON.parse(s); } catch (e) { return null; } }).filter(Boolean),
       hours: hgetall(r[4]),
-      days: days.map((d, i) => Object.assign({ day: d, uv: Number(r[6 + i * 2]) || 0 }, hgetall(r[5 + i * 2])))
+      online: Object.keys(online).map(k => toCity(k, online[k])).sort((a, b) => b.n - a.n),
+      cities: Object.entries(hgetall(r[6])).map(([k, n]) => toCity(k, n)).sort((a, b) => b.n - a.n).slice(0, 60),
+      days: days.map((d, i) => Object.assign({ day: d, uv: Number(r[B + 1 + i * 2]) || 0 }, hgetall(r[B + i * 2])))
     };
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify(out));

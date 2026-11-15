@@ -8,19 +8,34 @@ const EVENTS = new Set(['cor_mg', 'cor_m1', 'cor_mh', 'cart', 'buy', 'wa', 'stor
 
 // Tudo numa chamada só ao Redis, para gastar um comando por sinal
 const SCRIPT = `
-local now=tonumber(ARGV[1]); local v=ARGV[2]; local day=ARGV[3]; local hour=ARGV[4]
+local now=tonumber(ARGV[1]); local v=ARGV[2]; local day=ARGV[3]; local hour=ARGV[4]; local geo=ARGV[7]
 redis.call('ZADD','live',now,v)
-if ARGV[6]=='1' then redis.call('ZREMRANGEBYSCORE','live',0,now-600000) end
+if geo~='' then redis.call('HSET','lg',v,geo) end
+if ARGV[6]=='1' then
+  local old=redis.call('ZRANGEBYSCORE','live',0,now-600000,'LIMIT',0,500)
+  if #old>0 then redis.call('HDEL','lg',unpack(old)); redis.call('ZREM','live',unpack(old)) end
+end
 local n=redis.call('ZCOUNT','live',now-${WINDOW},'+inf')
 local pk=tonumber(redis.call('HGET','d:'..day,'peak') or '0')
 if n>pk then redis.call('HSET','d:'..day,'peak',n) end
 if ARGV[5]=='1' then
-  redis.call('PFADD','uv:'..day,v)
+  local nw=redis.call('PFADD','uv:'..day,v)
   redis.call('HINCRBY','d:'..day,'pv',1)
   redis.call('HINCRBY','h:'..day,hour,1)
+  if nw==1 and geo~='' then redis.call('HINCRBY','c:'..day,geo,1) end
 end
 local s=tonumber(redis.call('GET','sold') or '0')
 return {n,s}`;
+
+// Cidade aproximada pelo IP (cabeçalhos da Vercel). Só a cidade é guardada, nunca o IP.
+function geoOf(req) {
+  const h = req.headers;
+  const dec = x => { try { return decodeURIComponent(String(x || '')); } catch (e) { return String(x || ''); } };
+  const clean = x => dec(x).replace(/[|\r\n]/g, ' ').trim().slice(0, 60);
+  const lat = parseFloat(h['x-vercel-ip-latitude']), lon = parseFloat(h['x-vercel-ip-longitude']);
+  if (!isFinite(lat) || !isFinite(lon)) return '';
+  return [clean(h['x-vercel-ip-city']) || 'Desconhecida', clean(h['x-vercel-ip-country-region']), clean(h['x-vercel-ip-country']), lat.toFixed(2), lon.toFixed(2)].join('|');
+}
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -40,7 +55,7 @@ module.exports = async (req, res) => {
 
     const pv = b.t === 'pv' ? '1' : '0';
     const clean = Math.random() < 0.05 ? '1' : '0';
-    const r = await cmd(['EVAL', SCRIPT, 0, Date.now(), v, day, hour, pv, clean]);
+    const r = await cmd(['EVAL', SCRIPT, 0, Date.now(), v, day, hour, pv, clean, geoOf(req)]);
     res.setHeader('Content-Type', 'application/json');
     res.end(JSON.stringify({ live: Number(r[0]) || 0, sold: Number(r[1]) || 0 }));
   } catch (e) {

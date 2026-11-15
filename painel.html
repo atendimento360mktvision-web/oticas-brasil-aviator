@@ -6,6 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Painel ao vivo · Lançamento Ray-Ban Aviator</title>
 <link rel="icon" href="img/logo.png">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -57,6 +58,37 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
 .login input{width:100%;font:inherit;padding:14px 16px;border-radius:12px;border:1px solid var(--line);background:var(--card);margin:18px 0 12px}
 .login button{font:inherit;font-weight:600;padding:13px 22px;border-radius:999px;border:0;background:#241E33;color:#fff;cursor:pointer}
 .note{font-size:12.5px;color:var(--muted);margin-top:26px;max-width:62ch}
+.mapbox{position:relative;height:min(68vh,620px);min-height:440px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#E8E6E1;margin-bottom:14px}
+#map{position:absolute;inset:0;z-index:1}
+.leaflet-container{background:#E8E6E1;font:inherit}
+.ov{position:absolute;z-index:500;display:grid;gap:12px;left:16px;top:16px;width:260px;max-height:calc(100% - 32px)}
+.ov .card{padding:14px 16px;border-radius:14px;box-shadow:0 6px 24px rgb(36 30 51/.08)}
+.ov .big{display:flex;align-items:center;gap:10px;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
+.ov .sm{font-size:12.5px;color:var(--muted)}
+.ov .split{display:grid;grid-template-columns:1fr 1fr;gap:10px;border-top:1px solid var(--line);margin-top:12px;padding-top:10px}
+.ov .split b{display:block;font-size:17px;font-variant-numeric:tabular-nums}
+.ov .val{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums}
+.citybox{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.cities{list-style:none;margin:10px 0 0;padding:0 4px 0 0;overflow-y:auto;max-height:220px}
+.cities li{display:grid;grid-template-columns:34px 1fr auto;align-items:center;gap:8px;padding:7px 0;font-size:13.5px;border-bottom:1px solid var(--line)}
+.cities li:last-child{border-bottom:0}
+.cities .uf{font-size:11px;font-weight:700;background:rgb(var(--ink)/.07);border-radius:5px;text-align:center;padding:2px 0;color:rgb(var(--ink)/.7)}
+.cities .ct{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cities .on{color:var(--green);font-weight:700;margin-right:6px;font-size:12px}
+.cities b{font-variant-numeric:tabular-nums}
+.badge-live{position:absolute;z-index:500;right:16px;top:16px;display:flex;align-items:center;gap:8px;background:#241E33;color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.06em;padding:9px 14px;border-radius:10px}
+.badge-live i{width:9px;height:9px;border-radius:50%;background:#FF4D3A;animation:blink 1.4s ease-in-out infinite}
+@keyframes blink{50%{opacity:.35}}
+.legend{position:absolute;z-index:500;right:16px;bottom:16px;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);display:flex;gap:14px}
+.legend span{display:flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:50%;display:inline-block}
+.pin{position:relative}
+.pin b{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border-radius:50%;background:var(--green);box-shadow:0 0 0 3px rgba(255,255,255,.9)}
+.pin b::after{content:"";position:absolute;inset:-8px;border-radius:50%;border:2px solid var(--green);animation:p 1.8s ease-out infinite}
+.pin em{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-style:normal;font-size:11px;font-weight:700;color:#fff}
+.leaflet-top.leaflet-right{top:56px}
+.leaflet-tooltip{font:600 12.5px Manrope,sans-serif;border-radius:8px}
+@media (max-width:860px){.mapbox{height:auto;min-height:0;display:flex;flex-direction:column}#map{position:relative;height:380px;inset:auto}.ov{position:static;width:auto;max-height:none;padding:12px;grid-template-columns:1fr 1fr}.citybox{grid-column:1/-1}.badge-live{top:12px;right:12px}.legend{bottom:auto;top:328px;right:12px}}
 @media (max-width:860px){.kpis{grid-template-columns:1fr 1fr}.hero-k{grid-column:1/-1}.two{grid-template-columns:1fr}.row{grid-template-columns:132px 1fr 40px;font-size:13.5px}.num{font-size:44px}.hero-k .num{font-size:72px}}
 </style>
 </head>
@@ -66,6 +98,18 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     <div><img src="img/logo.png" alt="Óticas Brasil"><h1>Lançamento Aviator <em>ao vivo</em></h1></div>
     <div class="upd" id="upd"><span class="dot"></span><span id="updT">Conectando…</span></div>
   </header>
+
+  <div class="mapbox">
+    <div id="map" aria-label="Mapa de onde as pessoas estão acessando"></div>
+    <div class="badge-live"><i></i>AO VIVO</div>
+    <div class="legend"><span><i style="background:var(--green)"></i>Na página agora</span><span><i style="background:#241E33"></i>Visitaram hoje</span></div>
+    <div class="ov">
+      <div class="card"><div class="big"><span class="dot"></span><span id="mLive">0</span></div><div class="sm">Visitantes online</div>
+        <div class="split"><div><b id="mCart">0</b><span class="sm">No carrinho hoje</span></div><div><b id="mBuy">0</b><span class="sm">Foram ao checkout hoje</span></div></div></div>
+      <div class="card"><div class="val" id="mSoldV">R$ 0,00</div><div class="sm" id="mSoldQ">Vendidos hoje no lançamento</div></div>
+      <div class="card citybox"><div class="sm">Acessos por cidade hoje</div><ul class="cities" id="mCities"></ul></div>
+    </div>
+  </div>
 
   <div class="grid kpis">
     <div class="card hero-k"><div class="lab"><span class="dot"></span>Na página agora</div><div class="num" id="kLive">0</div><div class="hint">Pessoas com a página aberta no último minuto</div></div>
@@ -104,7 +148,7 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     <table><thead><tr><th>Dia</th><th>Visitantes</th><th>Visualizações</th><th>Pico</th><th>Cliques em comprar</th><th>Carrinho</th><th>WhatsApp</th></tr></thead><tbody id="days"></tbody></table>
   </div>
 
-  <p class="note">Os números são reais e atualizam sozinhos a cada 15 segundos. Na página de venda, o aviso de pessoas vendo agora só aparece a partir de 3 pessoas, e o de pares vendidos a partir de 3 pares.</p>
+  <p class="note">Os números são reais e atualizam sozinhos a cada 15 segundos. A cidade vem do endereço de internet de quem acessa, por isso é aproximada: em dados móveis a operadora às vezes aparece numa cidade vizinha ou na capital. Nenhum IP ou dado pessoal é guardado, só a cidade. Na página de venda, o aviso de pessoas vendo agora só aparece a partir de 3 pessoas, e o de pares vendidos a partir de 3 pares.</p>
 </div>
 
 <div class="login" id="login" hidden>
@@ -114,6 +158,7 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
   <p class="hint" id="lerr" hidden>Chave inválida. Use o link completo do painel.</p>
 </div>
 
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
 <script>
 (function(){
   var KEY='ob_painel', k='';
@@ -146,8 +191,43 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     for(i=0;i<24;i++){ var v=hs[(i<10?'0':'')+i]||0; html+='<div title="'+i+'h: '+v+' visitas" class="'+(i===nowH?'now':'')+'" style="height:'+(v/max*100)+'%"></div>' }
     $('hours').innerHTML=html;
     $('days').innerHTML=d.days.map(function(x){return '<tr><td>'+fmtDay(x.day)+'</td><td>'+n(x.uv)+'</td><td>'+n(x.pv)+'</td><td>'+n(x.peak)+'</td><td>'+n(x.ev_buy)+'</td><td>'+n(x.ev_cart)+'</td><td>'+n(x.ev_wa)+'</td></tr>'}).join('');
+    renderMap(d);
     $('upd').classList.remove('off');
     $('updT').textContent='Atualizado às '+new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  }
+  // Mapa ao vivo
+  var map, layerToday, layerOnline, fitted=false;
+  function brl(v){return v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'})}
+  function esc(t){return String(t).replace(/[&<>"]/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]})}
+  function initMap(){
+    if(map||!window.L)return;
+    map=L.map('map',{zoomControl:false,attributionControl:true,scrollWheelZoom:false}).setView([-15.5,-52],4);
+    L.control.zoom({position:'topright'}).addTo(map); map.attributionControl.setPrefix('Leaflet');
+    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+    layerToday=L.layerGroup().addTo(map); layerOnline=L.layerGroup().addTo(map);
+    map.on('click',function(){ map.scrollWheelZoom.enable() });
+  }
+  function renderMap(d){
+    initMap();
+    var t=d.days[0]||{};
+    $('mLive').textContent=n(d.live); $('mCart').textContent=n(t.ev_cart); $('mBuy').textContent=n(t.ev_buy);
+    var start=Date.parse(d.today+'T00:00:00-03:00'), q=0;
+    (d.sales||[]).forEach(function(s){ if(s.at>=start) q+=s.q });
+    q=Math.max(q,0); $('mSoldV').textContent=brl(q*1410); $('mSoldQ').textContent=(q===1?'1 par vendido':n(q)+' pares vendidos')+' hoje no lançamento';
+    var on={}; (d.online||[]).forEach(function(c){ on[c.city+'|'+c.uf]=c.n });
+    var list=(d.cities||[]).slice(); (d.online||[]).forEach(function(c){ if(!list.some(function(x){return x.city===c.city&&x.uf===c.uf})) list.push({city:c.city,uf:c.uf,cc:c.cc,lat:c.lat,lon:c.lon,n:0}) });
+    list.sort(function(a,b){ return (on[b.city+'|'+b.uf]||0)-(on[a.city+'|'+a.uf]||0) || b.n-a.n });
+    $('mCities').innerHTML=list.length?list.map(function(c){ var o=on[c.city+'|'+c.uf]; var uf=c.cc&&c.cc!=='BR'?c.cc:(c.uf||'·');
+      return '<li><span class="uf">'+esc(uf)+'</span><span class="ct">'+esc(c.city)+'</span><span>'+(o?'<span class="on">● '+o+' agora</span>':'')+'<b>'+n(c.n)+'</b></span></li>' }).join(''):'<li><span></span><span class="sm">Os acessos aparecem aqui ao longo do dia.</span><span></span></li>';
+    if(!map)return;
+    layerToday.clearLayers(); layerOnline.clearLayers();
+    var max=Math.max.apply(null,(d.cities||[]).map(function(c){return c.n}).concat([1])), pts=[];
+    (d.cities||[]).forEach(function(c){ if(c.lat==null)return; pts.push([c.lat,c.lon]);
+      L.circleMarker([c.lat,c.lon],{radius:4+Math.sqrt(c.n/max)*14,color:'#241E33',weight:1,fillColor:'#241E33',fillOpacity:.28}).bindTooltip(esc(c.city)+(c.uf?' · '+esc(c.uf):'')+': '+n(c.n)+(c.n===1?' visitante hoje':' visitantes hoje')).addTo(layerToday) });
+    (d.online||[]).forEach(function(c){ if(c.lat==null)return; pts.push([c.lat,c.lon]); var sz=Math.min(16+c.n*3,40);
+      L.marker([c.lat,c.lon],{icon:L.divIcon({className:'pin',html:'<b style="width:'+sz+'px;height:'+sz+'px"></b>'+(c.n>1?'<em>'+c.n+'</em>':''),iconSize:[0,0]}),zIndexOffset:1000})
+       .bindTooltip(esc(c.city)+(c.uf?' · '+esc(c.uf):'')+': '+c.n+(c.n===1?' pessoa agora':' pessoas agora')).addTo(layerOnline) });
+    if(!fitted&&pts.length>1){ fitted=true; map.fitBounds(pts,{paddingTopLeft:[innerWidth>860?320:40,60],paddingBottomRight:[60,60],maxZoom:6}) }
   }
   function load(){
     fetch('/api/stats',{headers:{'x-k':k},cache:'no-store'}).then(function(r){
