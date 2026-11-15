@@ -124,10 +124,11 @@ section{position:relative}
 .stats>div{padding:26px 18px 0 0}
 .stats .n{white-space:nowrap;font-family:var(--serif);font-size:clamp(40px,4.2vw,60px);line-height:.95;letter-spacing:-.02em}
 .stats .l{font-size:13px;color:rgb(var(--ink)/.6);margin-top:10px;max-width:16ch}
-.sign{margin-top:40px;display:inline-flex;align-items:center;gap:14px;font-size:14px;color:rgb(var(--ink)/.7);padding:10px 18px 10px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.12);background:rgba(255,255,255,.55);transition:box-shadow .25s,background-color .25s,transform .25s}
+.signs{margin-top:40px;display:flex;flex-direction:column;align-items:flex-start;gap:12px}
+.sign{display:inline-flex;align-items:center;gap:14px;font-size:14px;color:rgb(var(--ink)/.7);padding:10px 18px 10px 10px;border-radius:999px;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.12);background:rgba(255,255,255,.55);transition:box-shadow .25s,background-color .25s,transform .25s}
 .sign:hover{background:#fff;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.35)}
 .sign:active{transform:scale(.98)}
-.sign .ig{display:inline-flex;align-items:center;gap:6px}
+.sign .ig{display:inline-flex;align-items:center;gap:6px;word-break:break-all}
 .sign .sign-go{display:inline-flex;align-items:center;gap:6px;margin-left:10px;padding-left:16px;border-left:1px solid rgb(var(--ink)/.12);font-weight:600;color:rgb(var(--ink))}
 .sign:hover .sign-go svg{transform:translate(2px,-2px)}
 .sign .sign-go svg{transition:transform .25s}
@@ -350,6 +351,15 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
 .btn-wa-dark:hover{background:rgba(37,211,102,.22)}
 .cart-wa{width:100%;justify-content:center;min-height:50px;margin-top:10px}
 .cart-wa[aria-disabled="true"]{opacity:.4;pointer-events:none}
+.tgrid{columns:3;column-gap:20px}
+.tcard{break-inside:avoid;margin:0 0 20px;padding:26px 26px 22px;border-radius:28px;background:#fff;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.08);display:flex;flex-direction:column;gap:20px}
+.tcard blockquote{margin:0;font-family:var(--serif);font-size:24px;line-height:1.2;letter-spacing:-.01em;color:rgb(var(--ink))}
+.tcard blockquote::before{content:"“";display:block;font-size:56px;line-height:.6;height:22px;color:var(--lime)}
+.tcard figcaption{display:flex;align-items:center;gap:12px}
+.tav{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--wash);color:#241E33;font-weight:700;font-size:15px;flex:none}
+.tcard figcaption b{display:block;font-size:13.5px;font-weight:600;color:rgb(var(--ink));word-break:break-all}
+.tcard figcaption small{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:rgb(var(--ink)/.55)}
+.tcta{margin-top:8px;text-align:center}
 /* reveal */
 .js .rv{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out);transition-delay:var(--d,0s)}
 .js .rv.in{opacity:1;transform:none}
@@ -364,6 +374,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .vnav{display:none}
 }
 @media (max-width:900px){
+  .tgrid{columns:2}
   .nav ul{display:none}
   .strip .hide-s{display:none}
   .hero-grid{grid-template-columns:1fr;min-height:auto;padding-top:22px;padding-bottom:150px;gap:8px}
@@ -399,10 +410,16 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .stats{grid-template-columns:1fr;margin-top:36px}
   .stats>div{display:flex;align-items:baseline;gap:16px;padding:16px 0;border-bottom:1px solid rgb(var(--ink)/.12)}
   .stats .n{font-size:40px;min-width:3.6em}
+  .signs{align-items:stretch}
   .sign{display:flex;width:100%;padding-right:10px}
   .sign .sign-go{margin-left:auto;padding:0;border-left:0;font-size:0;gap:0;width:40px;height:40px;border-radius:50%;justify-content:center;background:#241E33;color:#F7F4EE;flex:none}
   .stats .l{margin-top:0;max-width:none;font-size:14px}
   .reel{gap:12px;--cw:84vw}
+  .tgrid{columns:unset;display:flex;align-items:flex-start;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;margin:0 calc(var(--pad)*-1);padding:4px var(--pad) 16px;scrollbar-width:none}
+  .tgrid::-webkit-scrollbar{display:none}
+  .tcard{flex:0 0 82%;scroll-snap-align:center;margin:0}
+  .tcard blockquote{font-size:22px}
+  #depoimentos .colors-head{margin-bottom:28px;gap:14px}
   #no-sol{padding-top:56px;padding-bottom:64px}
   #no-sol .sun-head{gap:16px;margin-bottom:22px}
   #no-sol .h2{margin-top:12px}
@@ -527,13 +544,13 @@ fbq('track','PageView');
   </div>
 
   <div class="reel" id="reel" aria-roledescription="carrossel" aria-label="Vídeos da lente no sol">
-    <article class="slide active" data-i="0" data-k="mh" style="--glow:rgba(206,198,222,.6)" aria-label="1 de 3: Ametista">
+    <article class="slide active" data-i="0" data-k="mg" style="--glow:rgba(223,216,188,.7)" aria-label="1 de 3: Âmbar">
       <div class="vid">
-        <video src="vid/lilas.mp4" poster="vid/lilas.jpg" muted playsinline preload="auto" autoplay></video>
+        <video src="vid/areia.mp4" poster="vid/areia.jpg" muted playsinline preload="auto" autoplay></video>
         <span class="tag l"><svg viewBox="0 0 16 16" fill="none"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4.5 4.5 0 0 0 6.5 6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Sombra</span>
         <span class="tag r"><span class="sunDot"></span>No sol</span>
       </div>
-      <div class="cap"><div><h3>Ametista</h3><p>Aro dourado · 001/MH</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mh" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar Ametista<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
+      <div class="cap"><div><h3>Âmbar</h3><p>Aro dourado · 001/MG</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mg" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">Comprar Âmbar<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
     <article class="slide" data-i="1" data-k="m1" style="--glow:rgba(204,218,217,.7)" aria-label="2 de 3: Esmeralda">
       <div class="vid">
@@ -543,18 +560,18 @@ fbq('track','PageView');
       </div>
       <div class="cap"><div><h3>Esmeralda</h3><p>Aro prata · 003/M1</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="m1" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1">Comprar Esmeralda<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
-    <article class="slide" data-i="2" data-k="mg" style="--glow:rgba(223,216,188,.7)" aria-label="3 de 3: Âmbar">
+    <article class="slide" data-i="2" data-k="mh" style="--glow:rgba(206,198,222,.6)" aria-label="3 de 3: Ametista">
       <div class="vid">
-        <video src="vid/areia.mp4" poster="vid/areia.jpg" muted playsinline preload="metadata"></video>
+        <video src="vid/lilas.mp4" poster="vid/lilas.jpg" muted playsinline preload="metadata"></video>
         <span class="tag l"><svg viewBox="0 0 16 16" fill="none"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4.5 4.5 0 0 0 6.5 6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Sombra</span>
         <span class="tag r"><span class="sunDot"></span>No sol</span>
       </div>
-      <div class="cap"><div><h3>Âmbar</h3><p>Aro dourado · 001/MG</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mg" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">Comprar Âmbar<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
+      <div class="cap"><div><h3>Ametista</h3><p>Aro dourado · 001/MH</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mh" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar Ametista<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
   </div>
   <div class="reel-ctrl">
     <button class="rbtn" type="button" data-dir="-1" aria-label="Vídeo anterior"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
-    <div class="dots" role="group" aria-label="Escolher vídeo"><button type="button" aria-label="Ametista" aria-current="true"></button><button type="button" aria-label="Esmeralda"></button><button type="button" aria-label="Âmbar"></button></div>
+    <div class="dots" role="group" aria-label="Escolher vídeo"><button type="button" aria-label="Âmbar" aria-current="true"></button><button type="button" aria-label="Esmeralda"></button><button type="button" aria-label="Ametista"></button></div>
     <button class="rbtn" type="button" data-dir="1" aria-label="Próximo vídeo"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   </div>
 </section>
@@ -591,6 +608,30 @@ fbq('track','PageView');
   </div>
 </section>
 
+<section class="sec" id="depoimentos" style="padding-top:0">
+  <div class="wrap">
+    <div class="colors-head">
+      <div>
+        <span class="eyebrow line rv">Quem compra, recomenda</span>
+        <h2 class="h2 rv" style="--d:.08s">Clientes de todo o Brasil <em>e de fora dele.</em></h2>
+      </div>
+      <p class="lede rv" style="--d:.16s">Comentários reais de clientes da Óticas Brasil no Instagram e no WhatsApp, de quem comprou na loja e de quem recebeu em casa.</p>
+    </div>
+    <div class="tgrid">
+      <figure class="tcard rv" style="--d:0.00s"><blockquote>Quando vc experimenta um rayban não quer nem olhar pra outro óculos</blockquote><figcaption><span class="tav">D</span><span><b>@daniella_santiago_</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.08s"><blockquote>Foi ótimo! Mesmo tendo sido uma compra virtual! E chegou super rápido!</blockquote><figcaption><span class="tav">H</span><span><b>@hemilianna</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.16s"><blockquote>Peguei ontem à noite, e ameeeeei 😍😍 Ele é PERFEITO! Muito muito obrigada pelo atendimento e paciência em me ajudar na escolha.</blockquote><figcaption><span class="tav">C</span><span><b>Cliente pelo WhatsApp</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 20l1.3-3.9A8 8 0 1 1 8 19.1z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>Mensagem no WhatsApp</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.00s"><blockquote>A melhor ótica do Brasil e um atendimento nota mil ❤️❤️ amo muito meus óculos 👓</blockquote><figcaption><span class="tav">T</span><span><b>@talita_martins_de_abreu</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.08s"><blockquote>😎❤️ excelente atendimento, rapidez na entrega pra outro estado e chega bem embalado</blockquote><figcaption><span class="tav">E</span><span><b>@ellen.xaud</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.16s"><blockquote>Já comprei 4 óculos, atendimento maravilhoso, tudo impecável.</blockquote><figcaption><span class="tav">B</span><span><b>@bmcdo_</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.00s"><blockquote>Atendimento impecável da Camila. Moro no USA e a Camila ajudou com a entrega.</blockquote><figcaption><span class="tav">G</span><span><b>@growwiththalita</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.08s"><blockquote>Meus óculos só compro na Óticas Brasil, atendimento excelente e produtos de qualidade. 🫶😎</blockquote><figcaption><span class="tav">C</span><span><b>@cibelleolegaria</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+      <figure class="tcard rv" style="--d:0.16s"><blockquote>Apenas perfeito atendimento rapidez no envio qualidade ❤️</blockquote><figcaption><span class="tav">L</span><span><b>@leticiasantosbh</b><small><svg width="13" height="13" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="2"/></svg>Comentário no Instagram</small></span></figcaption></figure>
+    </div>
+    <div class="tcta rv"><a class="link-arrow" href="https://www.instagram.com/oticasbrasilinhumas/" target="_blank" rel="noopener">Ver mais no Instagram da loja <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></div>
+  </div>
+</section>
+
 <section class="sec" id="curadoria" style="padding-top:0">
   <div class="wrap edit-grid">
     <figure class="photo rv" style="margin:0">
@@ -606,7 +647,7 @@ fbq('track','PageView');
         <div><div class="n">22,4 mil</div><div class="l">pessoas acompanham a loja no Instagram</div></div>
         <div><div class="n">10x</div><div class="l">sem juros no cartão de crédito</div></div>
       </div>
-      <a class="sign rv" style="--d:.32s" href="https://www.instagram.com/naymalucenas/" target="_blank" rel="noopener" aria-label="Ver o Instagram de Nayma Lucena, @naymalucenas"><img class="mono" src="img/nayma.jpg" alt="" width="150" height="150" loading="lazy"><span><b>Nayma Lucena</b><span class="ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg>@naymalucenas</span></span><span class="sign-go">Seguir no Instagram<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+      <div class="signs"><a class="sign rv" style="--d:.32s" href="https://www.instagram.com/naymalucenas/" target="_blank" rel="noopener" aria-label="Ver o Instagram de Nayma Lucena, @naymalucenas"><img class="mono" src="img/nayma.jpg" alt="" width="150" height="150" loading="lazy"><span><b>Nayma Lucena</b><span class="ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg>@naymalucenas</span></span><span class="sign-go">Seguir no Instagram<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><a class="sign rv" style="--d:.38s" href="https://www.instagram.com/oticasbrasilinhumas/" target="_blank" rel="noopener" aria-label="Ver o Instagram da Óticas Brasil Inhumas, @oticasbrasilinhumas"><img class="mono" src="img/oticas-avatar.jpg" alt="" width="150" height="150" loading="lazy"><span><b>Óticas Brasil Inhumas</b><span class="ig"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="12" r="4.2" stroke="currentColor" stroke-width="1.8"/><circle cx="17.4" cy="6.6" r="1.2" fill="currentColor"/></svg>@oticasbrasilinhumas</span></span><span class="sign-go">Seguir no Instagram<svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M4 12L12 4M6 4h6v6" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
     </div>
   </div>
 </section>
