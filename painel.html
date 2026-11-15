@@ -61,6 +61,7 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
 .mapbox{position:relative;height:min(68vh,620px);min-height:440px;border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#E8E6E1;margin-bottom:14px}
 #map{position:absolute;inset:0;z-index:1}
 .leaflet-container{background:#E8E6E1;font:inherit}
+.leaflet-tile-pane{filter:grayscale(1) brightness(1.06) contrast(.92)}
 .ov{position:absolute;z-index:500;display:grid;gap:12px;left:16px;top:16px;width:260px;max-height:calc(100% - 32px)}
 .ov .card{padding:14px 16px;border-radius:14px;box-shadow:0 6px 24px rgb(36 30 51/.08)}
 .ov .big{display:flex;align-items:center;gap:10px;font-size:26px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -203,7 +204,7 @@ th{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mute
     if(map||!window.L)return;
     map=L.map('map',{zoomControl:false,attributionControl:true,scrollWheelZoom:false}).setView([-15.5,-52],4);
     L.control.zoom({position:'topright'}).addTo(map); map.attributionControl.setPrefix('Leaflet');
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',{maxZoom:18,subdomains:'abcd',attribution:'&copy; OpenStreetMap &copy; CARTO'}).addTo(map);
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png',{maxZoom:18,attribution:'&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>'}).addTo(map);
     layerToday=L.layerGroup().addTo(map); layerOnline=L.layerGroup().addTo(map);
     map.on('click',function(){ map.scrollWheelZoom.enable() });
   }
