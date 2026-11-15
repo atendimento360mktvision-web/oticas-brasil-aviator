@@ -115,7 +115,7 @@ section{position:relative}
 
 /* editorial */
 .edit-grid{display:grid;grid-template-columns:5fr 6fr;gap:clamp(32px,6vw,96px);align-items:center}
-.photo{position:relative;border-radius:32px;overflow:hidden;aspect-ratio:820/1000;background:#d9cfc6}
+.photo{position:relative;border-radius:32px;overflow:hidden;aspect-ratio:2/3;background:#d9cfc6}
 .photo img{width:100%;height:100%;object-fit:cover;transform:scale(1.06);transition:transform 1.8s var(--ease-out)}
 .photo.in img{transform:scale(1)}
 .photo.rv.in img{transform:scale(1)}
@@ -274,6 +274,69 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
 .buybar .btn{min-height:46px;padding:4px 5px 4px 20px;font-size:14px}
 .buybar .btn .ic{width:36px;height:36px}
 
+
+/* cart + actions */
+.nav-actions{display:flex;align-items:center;gap:10px}
+.cartbtn{position:relative;width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;background:transparent;color:#241E33;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.18);transition:box-shadow .25s,background-color .25s}
+.cartbtn:hover{box-shadow:inset 0 0 0 1px rgb(var(--ink)/.5)}
+.cartbtn.on-dark{color:#F7F4EE;box-shadow:inset 0 0 0 1px rgba(247,244,238,.25);width:46px;height:46px}
+.badge{position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;padding:0 6px;border-radius:999px;background:var(--lime);color:#241E33;font-size:11.5px;font-weight:700;display:grid;place-items:center;box-shadow:0 0 0 2px var(--bg)}
+.cartbtn.on-dark .badge{box-shadow:0 0 0 2px #241E33}
+.badge[hidden]{display:none}
+.badge.bump{animation:bump .45s cubic-bezier(.34,1.56,.64,1)}
+@keyframes bump{0%{transform:scale(.6)}100%{transform:scale(1)}}
+.btn svg{flex:none}
+.btn-ghost.add-cart{gap:10px;padding:6px 24px 6px 20px;background:transparent;border:0;cursor:pointer;font:inherit;font-size:15px;font-weight:600}
+.btn-ghost-dark{display:inline-flex;align-items:center;gap:10px;min-height:52px;padding:6px 24px 6px 20px;border-radius:999px;border:0;cursor:pointer;background:transparent;color:#F7F4EE;box-shadow:inset 0 0 0 1px rgba(247,244,238,.3);font:inherit;font-size:15px;font-weight:600;transition:box-shadow .25s}
+.btn-ghost-dark:hover{box-shadow:inset 0 0 0 1px rgba(247,244,238,.7)}
+.close-ctas{display:flex;gap:12px;flex-wrap:wrap}
+.seesun{display:inline-flex;align-items:center;gap:8px;margin-top:20px;font-size:14px;font-weight:600;color:rgb(var(--ink)/.7);border-bottom:1px solid rgb(var(--ink)/.25);padding-bottom:3px}
+.seesun:hover{color:rgb(var(--ink));border-color:rgb(var(--ink))}
+.iconbtn{width:48px;height:48px;border-radius:50%;border:0;cursor:pointer;display:grid;place-items:center;background:rgba(255,255,255,.7);color:#241E33;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.15);transition:background-color .25s,box-shadow .25s,transform .2s}
+.iconbtn:hover{background:#fff;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.45)}
+.iconbtn:active{transform:scale(.94)}
+.card-actions,.cap-actions{display:flex;align-items:center;gap:10px}
+.card .img{display:block}
+.lede.strong{color:rgb(var(--ink));font-weight:600;margin-top:14px}
+.stats.two{grid-template-columns:repeat(2,1fr)}
+.cart-overlay{position:fixed;inset:0;z-index:90;background:rgba(18,14,26,.45);opacity:0;transition:opacity .3s}
+.cart-overlay.on{opacity:1}
+.cart{position:fixed;top:0;right:0;bottom:0;z-index:95;width:min(430px,100%);background:#F7F4EE;display:flex;flex-direction:column;box-shadow:-20px 0 60px rgba(36,30,51,.18);transform:translateX(105%);transition:transform .45s var(--ease-out);visibility:hidden}
+.cart.open{transform:none;visibility:visible}
+.cart-head{display:flex;justify-content:space-between;align-items:center;padding:22px 24px;border-bottom:1px solid rgb(var(--ink)/.1)}
+.cart-head h2{font-family:var(--serif);font-weight:400;font-size:32px;margin:0;letter-spacing:-.01em}
+.cart-x{width:44px;height:44px;border-radius:50%;border:0;background:rgb(var(--ink)/.06);color:#241E33;cursor:pointer;display:grid;place-items:center}
+.cart-body{flex:1;overflow:auto;padding:8px 24px 20px}
+.cart-items{list-style:none;margin:0;padding:0}
+.cart-items li{display:grid;grid-template-columns:96px 1fr;gap:16px;padding:18px 0;border-bottom:1px solid rgb(var(--ink)/.1);align-items:center}
+.cart-items .th{width:96px;aspect-ratio:1.2;border-radius:16px;background:var(--cw);display:grid;place-items:center;overflow:hidden}
+.cart-items .th img{width:120%;max-width:none}
+.cart-items .nm{font-family:var(--serif);font-size:24px;line-height:1}
+.cart-items .cd{font-size:12.5px;color:rgb(var(--ink)/.55);margin:4px 0 10px}
+.cart-items .ln{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.qty{display:inline-flex;align-items:center;border-radius:999px;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.2)}
+.qty button{width:36px;height:36px;border:0;background:none;cursor:pointer;font-size:18px;color:#241E33;border-radius:50%}
+.qty button:hover{background:rgb(var(--ink)/.06)}
+.qty span{min-width:24px;text-align:center;font-weight:600;font-variant-numeric:tabular-nums}
+.cart-items .pr{font-weight:600;font-size:14.5px;font-variant-numeric:tabular-nums}
+.cart-empty{padding:28px 0 6px;color:rgb(var(--ink)/.65)}
+.cart-empty p{font-family:var(--serif);font-size:26px;color:rgb(var(--ink));margin:0 0 6px}
+.cart-more{margin-top:20px}
+.cart-more>span{display:block;font-size:12px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:rgb(var(--ink)/.5);margin-bottom:12px}
+.cart-chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:10px;padding:8px 16px 8px 8px;border-radius:999px;border:0;cursor:pointer;background:#fff;box-shadow:inset 0 0 0 1px rgb(var(--ink)/.14);font:inherit;font-size:14px;font-weight:600;color:#241E33;transition:box-shadow .2s}
+.chip:hover{box-shadow:inset 0 0 0 1px rgb(var(--ink)/.45)}
+.chip i{width:26px;height:26px;border-radius:50%;background:var(--c);box-shadow:inset 0 0 0 2px var(--f)}
+.chip b{font-weight:700;color:rgb(var(--ink)/.45)}
+.cart-foot{padding:20px 24px max(22px,env(safe-area-inset-bottom));border-top:1px solid rgb(var(--ink)/.1);background:#fff}
+.cart-total{display:flex;justify-content:space-between;align-items:baseline}
+.cart-total span{font-size:14px;color:rgb(var(--ink)/.6)}
+.cart-total b{font-family:var(--serif);font-weight:400;font-size:38px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.cart-inst{margin:2px 0 16px;font-size:13.5px;color:rgb(var(--ink)/.6);text-align:right}
+.cart-go{width:100%;justify-content:space-between;min-height:56px}
+.cart-go[aria-disabled="true"]{opacity:.4;pointer-events:none}
+.cart-note{margin:12px 0 0;font-size:12px;color:rgb(var(--ink)/.5);text-align:center}
+
 /* reveal */
 .js .rv{opacity:0;transform:translateY(28px);transition:opacity .8s var(--ease-out),transform .8s var(--ease-out);transition-delay:var(--d,0s)}
 .js .rv.in{opacity:1;transform:none}
@@ -291,7 +354,16 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .nav ul{display:none}
   .strip .hide-s{display:none}
   .hero-grid{grid-template-columns:1fr;min-height:auto;padding-top:22px;padding-bottom:150px;gap:8px}
-  .stage{order:2;margin-top:8px}
+  .hero-grid{display:flex;flex-direction:column;align-items:stretch}
+  .hero .copy{display:contents}
+  .stories{order:1;margin-bottom:4px}
+  .stage{order:2;margin-top:0}
+  .hero .price{order:3;margin:26px 0 18px}
+  .hero .ctas{order:4}
+  .hero .eyebrow{order:5;margin-top:40px}
+  .hero h1{order:6}
+  .hero .sub{order:7}
+  .seesun{order:8;align-self:flex-start}
   .ghost{font-size:34vw;top:40%}
   .facts ul{flex-wrap:wrap;justify-content:flex-start;gap:10px 22px}
   .edit-grid,.reasons,.close-grid{grid-template-columns:1fr}
@@ -322,11 +394,22 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   .slide .tag.l{left:12px}.slide .tag.r{right:12px}
   .dark{border-radius:32px 32px 0 0}
   .close-stage{padding:18px 12px 20px}
-  #buyClose{width:100%;justify-content:space-between}
+  .hero .ctas .add-cart{width:100%;justify-content:center}
+  .close-ctas .btn,.close-ctas button{width:100%;justify-content:space-between}
+  .close-ctas button{justify-content:center}
+  .nav .cartbtn{width:44px;height:44px}
+  .cart{top:auto;left:0;width:100%;max-height:88dvh;border-radius:24px 24px 0 0;transform:translateY(105%)}
+  .cart.open{transform:none}
+  .cart-items li{grid-template-columns:80px 1fr}
+  .cart-items .th{width:80px}
+  .stats.two{grid-template-columns:1fr}
   .buybar{left:12px;right:12px;bottom:12px;transform:translateY(140%);gap:10px;padding:7px 7px 7px 12px}
   .buybar.show{transform:none}
   .buybar .info{flex:1;min-width:0}
-  .buybar .info span{display:none}
+  .buybar .info{display:none}
+  .buybar{justify-content:space-between}
+  .buybar .btn{flex:1;justify-content:space-between}
+  .nav .hide-s{display:none}
   .buybar .sw-mini button{width:24px;height:24px}
   .viewer{padding:0}
   .vcard{width:100%;height:100%;max-width:none;aspect-ratio:auto;border-radius:0}
@@ -353,7 +436,8 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
       <li><a href="#cores">As cores</a></li>
       <li><a href="#curadoria">Curadoria</a></li>
     </ul></nav>
-    <a class="btn btn-primary" href="#cores"><span class="txt">Comprar agora</span><span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+    <div class="nav-actions"><button class="cartbtn" type="button" data-opencart aria-label="Abrir carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="badge" data-count hidden>0</span></button>
+    <a class="btn btn-primary" href="#cores"><span class="txt">Comprar<span class="hide-s"> agora</span></span><span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
   </div>
 </header>
 
@@ -372,8 +456,9 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
       <div class="price fx" style="--d:.68s"><span class="v">R$ 1.410</span><span class="p">ou <b>10x de R$ 141</b> sem juros</span></div>
       <div class="ctas fx" style="--d:.8s">
         <a class="btn btn-primary" id="buyHero" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar agora<span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-        <a class="btn btn-ghost" href="#no-sol"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg>Ver a lente no sol</a>
+        <button class="btn btn-ghost add-cart" type="button" data-add="current"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Adicionar ao carrinho</button>
       </div>
+      <a class="seesun fx" style="--d:.9s" href="#no-sol"><svg width="12" height="12" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 3.5v9l7.5-4.5z" fill="currentColor"/></svg>Ver a lente mudar no sol</a>
     </div>
 
     <div class="stage fx" style="--d:.45s">
@@ -406,9 +491,9 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   <div class="wrap sun-head">
     <div>
       <span class="eyebrow line rv">Veja na prática</span>
-      <h2 class="h2 rv" style="--d:.08s">Clarinha na sombra.<br><em>Escura no sol.</em></h2>
+      <h2 class="h2 rv" style="--d:.08s">Um óculos.<br><em>Duas versões.</em></h2>
     </div>
-    <p class="lede rv" style="--d:.16s">A Nayma testou as três cores na frente da loja. De um lado, a lente na sombra. Do outro, a mesma lente depois de alguns segundos no sol.</p>
+    <p class="lede rv" style="--d:.16s">Na sombra, a lente fica mais clara. Quando exposta ao sol, escurece em poucos segundos. Veja a mesma lente se transformar.</p>
   </div>
 
   <div class="reel" id="reel" aria-roledescription="carrossel" aria-label="Vídeos da lente no sol">
@@ -418,7 +503,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
         <span class="tag l"><svg viewBox="0 0 16 16" fill="none"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4.5 4.5 0 0 0 6.5 6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Sombra</span>
         <span class="tag r"><span class="sunDot"></span>No sol</span>
       </div>
-      <div class="cap"><div><h3>Lilás</h3><p>Aro dourado · 001/MH</p></div><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar Lilás<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      <div class="cap"><div><h3>Lilás</h3><p>Aro dourado · 001/MH</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mh" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar Lilás<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
     <article class="slide" data-i="1" data-k="m1" style="--glow:rgba(204,218,217,.7)" aria-label="2 de 3: Névoa">
       <div class="vid">
@@ -426,7 +511,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
         <span class="tag l"><svg viewBox="0 0 16 16" fill="none"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4.5 4.5 0 0 0 6.5 6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Sombra</span>
         <span class="tag r"><span class="sunDot"></span>No sol</span>
       </div>
-      <div class="cap"><div><h3>Névoa</h3><p>Aro prata · 003/M1</p></div><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1">Comprar Névoa<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      <div class="cap"><div><h3>Névoa</h3><p>Aro prata · 003/M1</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="m1" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1">Comprar Névoa<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
     <article class="slide" data-i="2" data-k="mg" style="--glow:rgba(223,216,188,.7)" aria-label="3 de 3: Areia">
       <div class="vid">
@@ -434,7 +519,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
         <span class="tag l"><svg viewBox="0 0 16 16" fill="none"><path d="M13 9.5A5.5 5.5 0 1 1 6.5 3a4.5 4.5 0 0 0 6.5 6.5z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Sombra</span>
         <span class="tag r"><span class="sunDot"></span>No sol</span>
       </div>
-      <div class="cap"><div><h3>Areia</h3><p>Aro dourado · 001/MG</p></div><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">Comprar Areia<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
+      <div class="cap"><div><h3>Areia</h3><p>Aro dourado · 001/MG</p></div><div class="cap-actions"><button class="iconbtn add-cart" type="button" data-add="mg" aria-label="Adicionar ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="btn btn-primary" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">Comprar Areia<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
     </article>
   </div>
   <div class="reel-ctrl">
@@ -454,24 +539,24 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
       <p class="lede rv" style="--d:.16s">Mesmo desenho aviador, mesma leveza. Muda a cor da lente e muda o clima do look. Escolha a sua e finalize a compra no site em poucos cliques.</p>
     </div>
     <div class="cards">
-      <a class="card rv" style="--cw:#EFEBF4" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">
+      <article class="card rv" style="--cw:#EFEBF4">
         <div class="top"><span>001/MH</span><span class="tag">Lançamento</span></div>
-        <div class="img"><img src="img/001mh.webp" alt="Ray-Ban Aviator RB3791 lente lilás" width="890" height="410" loading="lazy"></div>
+        <a class="img" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1" aria-label="Comprar Lilás"><img src="img/001mh.webp" alt="Ray-Ban Aviator RB3791 lente lilás" width="890" height="410" loading="lazy"></a>
         <h3>Lilás</h3><p class="spec">Aro dourado, lente lilás suave</p>
-        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="buy" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-      </a>
-      <a class="card rv" style="--cw:#F4EFE1;--d:.1s" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1">
+        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="card-actions"><button class="iconbtn add-cart" type="button" data-add="mh" aria-label="Adicionar Lilás ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="buy" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1" aria-label="Comprar Lilás"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span></div>
+      </article>
+      <article class="card rv" style="--cw:#F4EFE1;--d:.1s">
         <div class="top"><span>001/MG</span><span class="tag">Lançamento</span></div>
-        <div class="img"><img src="img/001mg.webp" alt="Ray-Ban Aviator RB3791 lente areia" width="890" height="410" loading="lazy"></div>
+        <a class="img" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1" aria-label="Comprar Areia"><img src="img/001mg.webp" alt="Ray-Ban Aviator RB3791 lente areia" width="890" height="410" loading="lazy"></a>
         <h3>Areia</h3><p class="spec">Aro dourado, lente areia clarinha</p>
-        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="buy" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-      </a>
-      <a class="card rv" style="--cw:#E8EFEE;--d:.2s" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1">
+        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="card-actions"><button class="iconbtn add-cart" type="button" data-add="mg" aria-label="Adicionar Areia ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="buy" href="https://seguro.lancamentooculosnayma.com/r/P383GE83XH:1" aria-label="Comprar Areia"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span></div>
+      </article>
+      <article class="card rv" style="--cw:#E8EFEE;--d:.2s">
         <div class="top"><span>003/M1</span><span class="tag">Lançamento</span></div>
-        <div class="img"><img src="img/003m1.webp" alt="Ray-Ban Aviator RB3791 lente névoa" width="890" height="410" loading="lazy"></div>
+        <a class="img" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1" aria-label="Comprar Névoa"><img src="img/003m1.webp" alt="Ray-Ban Aviator RB3791 lente névoa" width="890" height="410" loading="lazy"></a>
         <h3>Névoa</h3><p class="spec">Aro prata, lente cinza azulada</p>
-        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="buy" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></div>
-      </a>
+        <div class="row"><span class="pv">R$ 1.410<small>ou 10x de R$ 141</small></span><span class="card-actions"><button class="iconbtn add-cart" type="button" data-add="m1" aria-label="Adicionar Névoa ao carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></button><a class="buy" href="https://seguro.lancamentooculosnayma.com/r/PC3CFCG8KG:1" aria-label="Comprar Névoa"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></a></span></div>
+      </article>
     </div>
   </div>
 </section>
@@ -479,16 +564,16 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
 <section class="sec" id="curadoria" style="padding-top:0">
   <div class="wrap edit-grid">
     <figure class="photo rv" style="margin:0">
-      <img src="img/model.webp" alt="Mulher usando óculos aviador Ray-Ban com lente colorida na Óticas Brasil" width="820" height="1000" loading="lazy">
-      <figcaption>Lançamentos by Nayma Lucena</figcaption>
+      <img src="img/nayma-curadoria.webp" alt="Nayma Lucena usando óculos de sol" width="900" height="1351" loading="lazy">
+      <figcaption>Nayma Lucena</figcaption>
     </figure>
     <div>
       <span class="eyebrow line rv">A curadoria</span>
-      <h2 class="h2 rv" style="--d:.08s">Luxo, exclusividade e atendimento <em>personalizado.</em></h2>
-      <p class="lede rv" style="--d:.16s;margin-top:24px">A Óticas Brasil de Inhumas é a ótica da Nayma Lucena. Aqui cada lançamento chega com consultoria de verdade: a gente ajuda você a escolher a cor que combina com o seu rosto e o seu estilo, e manda para qualquer lugar do Brasil.</p>
-      <div class="stats rv" style="--d:.24s">
+      <h2 class="h2 rv" style="--d:.08s">Óticas Brasil, por <em>Nayma Lucena</em></h2>
+      <p class="lede rv" style="--d:.16s;margin-top:24px">Uma curadoria das principais grifes e dos lançamentos mais desejados, com atendimento personalizado para ajudar você a encontrar o óculos ideal para o seu estilo.</p>
+      <p class="lede strong rv" style="--d:.2s">Lojas em Inhumas e Itaberaí. Enviamos para todo o Brasil.</p>
+      <div class="stats two rv" style="--d:.24s">
         <div><div class="n">22,4 mil</div><div class="l">pessoas acompanham a loja no Instagram</div></div>
-        <div><div class="n">2</div><div class="l">lojas físicas, em Inhumas e Itaberaí</div></div>
         <div><div class="n">10x</div><div class="l">sem juros no cartão de crédito</div></div>
       </div>
       <div class="sign rv" style="--d:.32s"><img class="mono" src="img/nayma.jpg" alt="Foto de perfil de Nayma Lucena" width="150" height="150" loading="lazy"><span><b>Nayma Lucena</b>Óticas Brasil Inhumas</span></div>
@@ -526,7 +611,7 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
         <span class="eyebrow line rv">Lançamento Ray-Ban Aviator RB3791</span>
         <h2 class="h2 rv" style="--d:.08s">Escolha a sua cor e garanta o seu <em>aviador.</em></h2>
         <div class="close-price rv" style="--d:.16s"><span class="v">R$ 1.410</span><span class="p">ou <b>10x de R$ 141</b> sem juros</span></div>
-        <a class="btn btn-lime rv" style="--d:.22s" id="buyClose" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1"><span data-buylabel>Comprar Lilás agora</span><span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+        <div class="close-ctas rv" style="--d:.22s"><a class="btn btn-lime" id="buyClose" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1"><span data-buylabel>Comprar Lilás agora</span><span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><button class="btn btn-ghost-dark add-cart" type="button" data-add="current"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>Adicionar ao carrinho</button></div>
         <ul class="ticks rv" style="--d:.3s">
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Ray-Ban original</li>
           <li><svg viewBox="0 0 16 16" fill="none"><path d="M3 8.5l3 3 7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>Envio rápido e garantido para todo o Brasil</li>
@@ -569,8 +654,21 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
     <button type="button" data-k="m1" aria-pressed="false" aria-label="Névoa" style="--c:#CCDAD9;--f:var(--silver)"></button>
   </div>
   <div class="info"><b data-barname>Aviator Lilás</b><span>R$ 1.410 · 10x R$ 141</span></div>
+  <button class="cartbtn on-dark" type="button" data-opencart aria-label="Abrir carrinho"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5.5 8.5h13l-1.1 11.5H6.6z" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"/><path d="M9 8.5V7a3 3 0 0 1 6 0v1.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg><span class="badge" data-count hidden>0</span></button>
   <a class="btn btn-lime" id="buyBar" href="https://seguro.lancamentooculosnayma.com/r/NVPX5ZAC4J:1">Comprar<span class="ic" aria-hidden="true"><svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
 </div>
+
+<div class="cart-overlay" id="cartOverlay" hidden></div>
+<aside class="cart" id="cart" role="dialog" aria-modal="true" aria-labelledby="cartTitle" aria-hidden="true">
+  <header class="cart-head"><h2 id="cartTitle">Seu carrinho</h2><button class="cart-x" type="button" data-closecart aria-label="Fechar carrinho"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></header>
+  <div class="cart-body"><ul class="cart-items" id="cartItems"></ul>
+    <div class="cart-empty" id="cartEmpty"><p>Seu carrinho está vazio.</p><span>Escolha uma ou mais cores:</span></div>
+    <div class="cart-more"><span id="cartMoreLabel">Adicionar outra cor</span><div class="cart-chips" id="cartChips"></div></div>
+  </div>
+  <div class="cart-foot"><div class="cart-total"><span>Total</span><b id="cartTotal">R$ 0</b></div><p class="cart-inst" id="cartInst">ou 10x sem juros</p>
+    <a class="btn btn-lime cart-go" id="cartGo" href="#">Finalizar compra<span class="ic" aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+    <p class="cart-note">Pagamento 100% seguro na loja Óticas Brasil.</p></div>
+</aside>
 
 <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Stories do lançamento">
   <button class="vnav p" type="button" data-v="-1" aria-label="Story anterior"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
@@ -677,6 +775,47 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   document.getElementById('vclose').addEventListener('click',close);
   viewer.addEventListener('click',function(e){if(e.target===viewer)close()});
   addEventListener('keydown',function(e){ if(!viewer.classList.contains('open'))return; if(e.key==='Escape')close(); if(e.key==='ArrowRight')go(si+1); if(e.key==='ArrowLeft')go(si-1) });
+
+
+  // cart
+  var CODES={mh:'NVPX5ZAC4J',mg:'P383GE83XH',m1:'PC3CFCG8KG'}, PRICE=1410;
+  var META={mh:{img:'001mh',cw:'#EFEBF4',c:'#CEC6DE',f:'var(--gold)',cd:'Aro dourado · 001/MH'},mg:{img:'001mg',cw:'#F4EFE1',c:'#DFD8BC',f:'var(--gold)',cd:'Aro dourado · 001/MG'},m1:{img:'003m1',cw:'#E8EFEE',c:'#CCDAD9',f:'var(--silver)',cd:'Aro prata · 003/M1'}};
+  var ORDER=['mh','mg','m1'], cart={mh:0,mg:0,m1:0};
+  try{var saved=JSON.parse(localStorage.getItem('ob_cart')||'null'); if(saved)ORDER.forEach(function(k){cart[k]=Math.max(0,Math.min(10,saved[k]|0))})}catch(e){}
+  function save(){try{localStorage.setItem('ob_cart',JSON.stringify(cart))}catch(e){}}
+  function brl(n){return 'R$ '+n.toLocaleString('pt-BR')}
+  var cartEl=document.getElementById('cart'), ov=document.getElementById('cartOverlay'), list=document.getElementById('cartItems'), chips=document.getElementById('cartChips'), lastF;
+  function renderCart(bump){
+    var n=0; list.innerHTML='';
+    ORDER.forEach(function(k){ var q=cart[k]; if(!q)return; n+=q; var m=META[k], d=data[k];
+      var li=document.createElement('li');
+      li.innerHTML='<span class="th" style="--cw:'+m.cw+'"><img src="img/'+m.img+'.webp" alt=""></span><div><div class="nm">Aviator '+d.name+'</div><div class="cd">'+m.cd+'</div><div class="ln"><span class="qty"><button type="button" data-q="-1" data-k="'+k+'" aria-label="Diminuir quantidade de '+d.name+'">−</button><span aria-live="polite">'+q+'</span><button type="button" data-q="1" data-k="'+k+'" aria-label="Aumentar quantidade de '+d.name+'">+</button></span><span class="pr">'+brl(q*PRICE)+'</span></div></div>';
+      list.appendChild(li);
+    });
+    chips.innerHTML='';
+    ORDER.forEach(function(k){ var m=META[k], d=data[k]; var b=document.createElement('button'); b.type='button'; b.className='chip'; b.dataset.addchip=k; b.style.setProperty('--c',m.c); b.style.setProperty('--f',m.f); b.innerHTML='<i></i>'+d.name+' <b>+</b>'; b.setAttribute('aria-label','Adicionar '+d.name+' ao carrinho'); chips.appendChild(b); });
+    document.getElementById('cartEmpty').style.display=n?'none':'block';
+    document.getElementById('cartMoreLabel').textContent=n?'Adicionar mais uma cor ou unidade':'Cores do lançamento';
+    var tot=n*PRICE; document.getElementById('cartTotal').textContent=brl(tot);
+    document.getElementById('cartInst').textContent=n?'ou 10x de '+brl(tot/10)+' sem juros':'Adicione uma cor para continuar';
+    var go=document.getElementById('cartGo'), parts=ORDER.filter(function(k){return cart[k]}).map(function(k){return CODES[k]+':'+cart[k]});
+    if(parts.length){go.href=P+parts.join(','); go.removeAttribute('aria-disabled')} else {go.href='#'; go.setAttribute('aria-disabled','true')}
+    $$('[data-count]').forEach(function(b){ b.textContent=n; b.hidden=!n; if(bump&&n){b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump')} });
+  }
+  function openCart(){ lastF=document.activeElement; ov.hidden=false; requestAnimationFrame(function(){ov.classList.add('on')}); cartEl.classList.add('open'); cartEl.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(function(){cartEl.querySelector('.cart-x').focus()},50) }
+  function closeCart(){ ov.classList.remove('on'); cartEl.classList.remove('open'); cartEl.setAttribute('aria-hidden','true'); document.body.style.overflow=''; setTimeout(function(){ov.hidden=true},300); if(lastF&&lastF.focus)lastF.focus() }
+  function addCart(k){ cart[k]=Math.min(10,(cart[k]||0)+1); save(); renderCart(true); openCart() }
+  document.addEventListener('click',function(e){
+    var t=e.target.closest('[data-add],[data-addchip],[data-q],[data-opencart],[data-closecart]'); if(!t)return;
+    if(t.dataset.add){ e.preventDefault(); addCart(t.dataset.add==='current'?cur:t.dataset.add) }
+    else if(t.dataset.addchip){ cart[t.dataset.addchip]=Math.min(10,cart[t.dataset.addchip]+1); save(); renderCart(true) }
+    else if(t.dataset.q){ var k=t.dataset.k; cart[k]=Math.max(0,Math.min(10,cart[k]+(+t.dataset.q))); save(); renderCart(true) }
+    else if(t.hasAttribute('data-opencart')){ renderCart(); openCart() }
+    else if(t.hasAttribute('data-closecart')){ closeCart() }
+  });
+  ov.addEventListener('click',closeCart);
+  addEventListener('keydown',function(e){ if(e.key==='Escape'&&cartEl.classList.contains('open'))closeCart() });
+  renderCart();
 
   // reveals
   var rv=$$('.rv');
