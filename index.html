@@ -655,12 +655,13 @@ footer .cols b{display:block;color:rgba(247,244,238,.9);font-weight:600;margin-b
   }
 
   // stories
+  ['lilas','nevoa','areia'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='video';l.href='vid/story-'+n+'.mp4';document.head.appendChild(l)});
   var S=[{src:'vid/story-lilas.mp4',k:'mh',label:'Lilás no sol'},{src:'vid/story-nevoa.mp4',k:'m1',label:'Névoa no sol'},{src:'vid/story-areia.mp4',k:'mg',label:'Areia no sol'}];
   var viewer=document.getElementById('viewer'), vv=document.getElementById('vvideo'), bars=$$('.vbars b'), si=0, raf, t0, DUR=6000, lastFocus;
   function tick(now){ var p=Math.min(1,(now-t0)/DUR); bars[si].style.width=(p*100)+'%'; if(p>=1){ go(si+1); return } raf=requestAnimationFrame(tick) }
   function show(i){
     si=i; var s=S[i], d=data[s.k];
-    vv.src=s.src; play(vv);
+    vv.poster=s.src.replace('.mp4','.jpg'); vv.src=s.src; play(vv); DUR=6000; vv.onloadedmetadata=function(){ if(isFinite(vv.duration)) DUR=Math.max(5000,Math.min(9000,vv.duration*2000)) };
     viewer.querySelector('[data-vlabel]').textContent=s.label;
     viewer.querySelector('[data-vtitle]').textContent='Aviator '+d.name;
     document.getElementById('vbuy').href=d.url;
