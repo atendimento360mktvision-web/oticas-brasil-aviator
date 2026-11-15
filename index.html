@@ -466,9 +466,9 @@ fbq('track','PageView');
   <div class="wrap hero-grid">
     <div class="copy">
       <div class="stories fx" style="--d:.05s" role="list" aria-label="Stories do lançamento">
-        <button class="story" type="button" data-s="0" role="listitem" aria-label="Ver story: lente ametista no sol"><span class="ring"><span class="in"><video src="vid/story-lilas.mp4" poster="vid/story-lilas.jpg" muted loop playsinline autoplay preload="metadata"></video></span></span><span class="lb">Ametista</span></button>
-        <button class="story" type="button" data-s="1" role="listitem" aria-label="Ver story: lente esmeralda no sol" style="--pd:.35s"><span class="ring"><span class="in"><video src="vid/story-nevoa.mp4" poster="vid/story-nevoa.jpg" muted loop playsinline autoplay preload="metadata"></video></span></span><span class="lb">Esmeralda</span></button>
-        <button class="story" type="button" data-s="2" role="listitem" aria-label="Ver story: lente âmbar no sol" style="--pd:.7s"><span class="ring"><span class="in"><video src="vid/story-areia.mp4" poster="vid/story-areia.jpg" muted loop playsinline autoplay preload="metadata"></video></span></span><span class="lb">Âmbar</span></button>
+        <button class="story" type="button" data-s="0" role="listitem" aria-label="Ver story: lente ametista no sol"><span class="ring"><span class="in"><video src="vid/ring-ametista.mp4" poster="vid/ring-ametista.jpg" muted loop playsinline autoplay preload="auto"></video></span></span><span class="lb">Ametista</span></button>
+        <button class="story" type="button" data-s="1" role="listitem" aria-label="Ver story: lente esmeralda no sol" style="--pd:.35s"><span class="ring"><span class="in"><video src="vid/ring-esmeralda.mp4" poster="vid/ring-esmeralda.jpg" muted loop playsinline autoplay preload="auto"></video></span></span><span class="lb">Esmeralda</span></button>
+        <button class="story" type="button" data-s="2" role="listitem" aria-label="Ver story: lente âmbar no sol" style="--pd:.7s"><span class="ring"><span class="in"><video src="vid/ring-ambar.mp4" poster="vid/ring-ambar.jpg" muted loop playsinline autoplay preload="auto"></video></span></span><span class="lb">Âmbar</span></button>
       </div>
       <span class="eyebrow fx" style="--d:.15s">Lançamento Ray-Ban Aviator RB3791</span>
       <h1><span class="ln"><span style="--d:.25s">Luxo que muda</span></span><span class="ln"><span style="--d:.37s">com a <em>luz.</em></span></span></h1>
@@ -696,7 +696,7 @@ fbq('track','PageView');
 <div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Stories do lançamento">
   <button class="vnav p" type="button" data-v="-1" aria-label="Story anterior"><svg width="18" height="18" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
   <div class="vcard">
-    <video id="vvideo" muted playsinline loop></video>
+    <video id="vvideo" muted playsinline preload="auto"></video>
     <div class="vbars"><i><b></b></i><i><b></b></i><i><b></b></i></div>
     <div class="vhead"><span class="av"><img src="img/logo.png" alt=""></span>oticasbrasilinhumas<small data-vlabel>Ametista no sol</small><button class="vclose" type="button" id="vclose" aria-label="Fechar"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></button></div>
     <button class="vtap l" type="button" data-v="-1" aria-label="Story anterior"></button>
@@ -776,20 +776,28 @@ fbq('track','PageView');
   }
 
   // stories
-  ['lilas','nevoa','areia'].forEach(function(n){var l=document.createElement('link');l.rel='preload';l.as='video';l.href='vid/story-'+n+'.mp4';document.head.appendChild(l)});
-  var S=[{src:'vid/story-lilas.mp4',k:'mh',label:'Ametista no sol'},{src:'vid/story-nevoa.mp4',k:'m1',label:'Esmeralda no sol'},{src:'vid/story-areia.mp4',k:'mg',label:'Âmbar no sol'}];
-  var viewer=document.getElementById('viewer'), vv=document.getElementById('vvideo'), bars=$$('.vbars b'), si=0, raf, t0, DUR=6000, lastFocus;
-  function tick(now){ var p=Math.min(1,(now-t0)/DUR); bars[si].style.width=(p*100)+'%'; if(p>=1){ go(si+1); return } raf=requestAnimationFrame(tick) }
+  var S=[{src:'vid/st-ametista.mp4',k:'mh',label:'Ametista'},{src:'vid/st-esmeralda.mp4',k:'m1',label:'Esmeralda'},{src:'vid/st-ambar.mp4',k:'mg',label:'Âmbar'}];
+  var pre={}; function prefetch(i){ if(i<0||i>=S.length||pre[i])return; pre[i]=1; var l=document.createElement('link'); l.rel='prefetch'; l.as='video'; l.href=S[i].src; document.head.appendChild(l) }
+  addEventListener('load',function(){ setTimeout(function(){prefetch(0)},1200) });
+  $$('.story').forEach(function(b){ ['pointerenter','touchstart','focus'].forEach(function(ev){ b.addEventListener(ev,function(){prefetch(+b.dataset.s)},{passive:true}) }) });
+  var viewer=document.getElementById('viewer'), vv=document.getElementById('vvideo'), bars=$$('.vbars b'), si=0, raf, lastFocus;
+  var held=false;
+  function tick(){ var d=vv.duration; if(d&&isFinite(d)){ bars[si].style.width=Math.min(100,vv.currentTime/d*100)+'%' } raf=requestAnimationFrame(tick) }
   function show(i){
     si=i; var s=S[i], d=data[s.k];
-    vv.poster=s.src.replace('.mp4','.jpg'); vv.src=s.src; play(vv); DUR=6000; vv.onloadedmetadata=function(){ if(isFinite(vv.duration)) DUR=Math.max(5000,Math.min(9000,vv.duration*2000)) };
+    vv.poster=s.src.replace('.mp4','.jpg'); vv.src=s.src; vv.currentTime=0; play(vv);
     viewer.querySelector('[data-vlabel]').textContent=s.label;
     viewer.querySelector('[data-vtitle]').textContent='Aviator '+d.name;
     document.getElementById('vbuy').href=d.url;
     bars.forEach(function(b,j){b.style.width=j<i?'100%':'0%'});
     $$('.story')[i].classList.add('seen');
-    cancelAnimationFrame(raf); t0=performance.now(); raf=requestAnimationFrame(tick);
+    prefetch(i+1);
+    cancelAnimationFrame(raf); raf=requestAnimationFrame(tick);
   }
+  vv.addEventListener('ended',function(){ if(viewer.classList.contains('open')) go(si+1) });
+  var card=viewer.querySelector('.vcard');
+  card.addEventListener('pointerdown',function(e){ if(e.target.closest('a,.vclose'))return; held=true; vv.pause() });
+  ['pointerup','pointercancel','pointerleave'].forEach(function(ev){ card.addEventListener(ev,function(){ if(held){ held=false; play(vv) } }) });
   function go(i){ if(i<0)i=0; if(i>=S.length){close();return} show(i) }
   function open(i){ lastFocus=document.activeElement; viewer.classList.add('open'); document.body.style.overflow='hidden'; show(i); document.getElementById('vclose').focus() }
   function close(){ cancelAnimationFrame(raf); viewer.classList.remove('open'); vv.pause(); vv.removeAttribute('src'); vv.load(); document.body.style.overflow=''; if(lastFocus)lastFocus.focus() }
