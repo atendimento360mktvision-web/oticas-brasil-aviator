@@ -1,6 +1,7 @@
 // Dados do painel. Protegido pela chave PAINEL_TOKEN (header x-k).
 const crypto = require('crypto');
-const { cmd, pipe, brt, readRaw } = require('./_lib/kv');
+const { cmd, pipe, brt } = require('./_lib/kv');
+const { ipKey, readLimited, limited, deny, sameSite } = require('./_lib/guard');
 const { addOrder } = require('./_lib/sales');
 
 function same(a, b) {
@@ -17,12 +18,24 @@ function hgetall(arr) {
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
   res.setHeader('X-Robots-Tag', 'noindex');
+  if (req.method !== 'GET' && req.method !== 'POST') return deny(res, 405);
   const key = process.env.PAINEL_TOKEN;
-  if (!key || !same(req.headers['x-k'] || '', key)) { res.statusCode = 401; return res.end('{}'); }
+  const ip = ipKey(req);
+  // Força bruta: depois de 10 chaves erradas em 15 min, o IP fica bloqueado até a janela virar
+  try { if (await limited('authfail', ip, 10, 900, true)) return deny(res, 429); } catch (e) {}
+  if (!key || !same(String(req.headers['x-k'] || '').slice(0, 200), key)) {
+    try { await limited('authfail', ip, 10, 900); } catch (e) {}
+    return deny(res, 401);
+  }
+  // Leitura frequente demais (painel aberto em muitos lugares ou robô com a chave)
+  try { if (await limited('stats', ip, 30, 60)) return deny(res, 429); } catch (e) {}
   // Registro manual de um pedido pago (para pedidos que chegaram antes do webhook funcionar)
   if (req.method === 'POST') {
+    if (!sameSite(req)) return deny(res, 403);
     try {
-      const b = JSON.parse(await readRaw(req) || '{}');
+      const raw = await readLimited(req, 1024);
+      if (raw === null) return deny(res, 413);
+      const b = JSON.parse(raw || '{}');
       const c = {};
       ['mg', 'm1', 'mh'].forEach(k => { const n = parseInt(b.c && b.c[k], 10); if (n > 0 && n < 50) c[k] = n; });
       if (!b.id || !Object.keys(c).length) { res.statusCode = 400; return res.end('{}'); }
@@ -70,6 +83,6 @@ module.exports = async (req, res) => {
   } catch (e) {
     res.statusCode = 500;
     res.setHeader('Content-Type', 'application/json');
-    res.end(JSON.stringify({ error: String(e.message || e) }));
+    res.end(JSON.stringify({ error: 'indisponivel' }));
   }
 };

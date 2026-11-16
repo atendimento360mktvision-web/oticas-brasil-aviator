@@ -1,7 +1,7 @@
 // Webhook da Yampi: conta os pares do lançamento a cada pedido pago.
 // Só conta pedidos assinados com YAMPI_WEBHOOK_SECRET (HMAC SHA256 em base64, header X-Yampi-Hmac-SHA256).
 const crypto = require('crypto');
-const { cmd, readRaw } = require('./_lib/kv');
+const { ipKey, readLimited, limited, deny } = require('./_lib/guard');
 const { addOrder, removeOrder, logHook } = require('./_lib/sales');
 
 // Código do link de compra (token do SKU na Yampi) e sufixo do código Ray-Ban de cada cor
@@ -45,7 +45,11 @@ function send(res, code, obj) {
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return send(res, 200, { ok: true });
-  const raw = await readRaw(req);
+  const raw = await readLimited(req, 512 * 1024);
+  if (raw === null) return deny(res, 413);
+  const ip = ipKey(req);
+  // Quem manda muitas chamadas com assinatura errada fica bloqueado por 15 min
+  try { if (await limited('hookfail', ip, 20, 900, true)) return deny(res, 429); } catch (e) {}
   let body = null;
   try { body = JSON.parse(raw); } catch (e) {}
   const ev = String((body && body.event) || '').slice(0, 40);
@@ -57,7 +61,10 @@ module.exports = async (req, res) => {
   const secret = process.env.YAMPI_WEBHOOK_SECRET;
   // Antes de a chave estar configurada, responde 200 para a Yampi conseguir salvar o webhook, mas não conta nada
   if (!secret) return reply(200, { ok: false, reason: 'sem-chave' });
-  if (!validSig(raw, req.headers['x-yampi-hmac-sha256'], secret)) return reply(401, { ok: false, reason: 'assinatura-invalida' });
+  if (!validSig(raw, req.headers['x-yampi-hmac-sha256'], secret)) {
+    try { await limited('hookfail', ip, 20, 900); } catch (e) {}
+    return reply(401, { ok: false, reason: 'assinatura-invalida' });
+  }
   if (!body) return reply(200, { ok: true, ignored: 'json' });
   if (!id) return reply(200, { ok: true, ignored: 'sem-pedido' });
 
