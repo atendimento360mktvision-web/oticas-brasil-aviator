@@ -3,12 +3,70 @@
   var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
   var P='https://seguro.lancamentooculosnayma.com/r/';
   var data={
-    mh:{url:P+'NVPX5ZAC4J:1',name:'Ametista',meta:'<b>Aro dourado</b> com lente âmbar · código 001/MG'},
+    mh:{url:P+'NVPX5ZAC4J:1',name:'Ametista',meta:'<b>Aro dourado</b> com lente ametista · código 001/MH'},
     mg:{url:P+'P383GE83XH:1',name:'Âmbar',meta:'<b>Aro dourado</b> com lente âmbar · código 001/MG'},
     m1:{url:P+'PC3CFCG8KG:1',name:'Esmeralda',meta:'<b>Aro prata</b> com lente esmeralda · código 003/M1'}
   };
   var cur='mg';
   function $$(q){return [].slice.call(document.querySelectorAll(q))}
+  // Repasse ao checkout: só utm_* e fbclid. A primeira entrada da aba fica em sessionStorage
+  // para não se perder em âncoras. Não grava nome, e-mail, telefone nem outros dados pessoais.
+  var UTM_KEYS=['utm_source','utm_medium','utm_campaign','utm_content','utm_term','fbclid'];
+  var utmMemo=null;
+  function cleanUtm(v){
+    if(typeof v!=='string')return '';
+    v=v.replace(/^\s+|\s+$/g,'');
+    if(!v||v.length>500||/[\u0000-\u001F\u007F]/.test(v))return '';
+    return v;
+  }
+  function utmsFrom(search){
+    var out={};
+    try{
+      var q=new URLSearchParams(search||'');
+      UTM_KEYS.forEach(function(k){var v=cleanUtm(q.get(k)||''); if(v)out[k]=v});
+    }catch(e){}
+    return out;
+  }
+  function hasUtm(o){return !!(o&&UTM_KEYS.some(function(k){return o[k]}))}
+  function loadUtms(){
+    if(utmMemo)return utmMemo;
+    var stored=null;
+    try{stored=JSON.parse(sessionStorage.getItem('ob_attr')||'null')}catch(e){}
+    var fromStore={};
+    if(stored&&typeof stored==='object')UTM_KEYS.forEach(function(k){var v=cleanUtm(stored[k]); if(v)fromStore[k]=v});
+    if(hasUtm(fromStore)){utmMemo=fromStore; return utmMemo}
+    var incoming=utmsFrom(location.search);
+    if(hasUtm(incoming)){
+      try{sessionStorage.setItem('ob_attr',JSON.stringify(incoming))}catch(e){}
+      utmMemo=incoming; return utmMemo;
+    }
+    utmMemo={}; return utmMemo;
+  }
+  function withAttr(href){
+    if(!href||href.indexOf('seguro.lancamentooculosnayma.com/r/')===-1)return href;
+    var attr=loadUtms(), pending=UTM_KEYS.filter(function(k){return attr[k]});
+    if(!pending.length)return href;
+    var parsed;
+    try{parsed=new URL(href,location.href)}catch(e){return href}
+    if(parsed.hostname!=='seguro.lancamentooculosnayma.com')return href;
+    var hashAt=href.indexOf('#');
+    var hash=hashAt>=0?href.slice(hashAt):'';
+    var noHash=hashAt>=0?href.slice(0,hashAt):href;
+    var qpos=noHash.indexOf('?');
+    var path=qpos===-1?noHash:noHash.slice(0,qpos);
+    var params=new URLSearchParams(qpos===-1?'':noHash.slice(qpos+1));
+    var changed=false;
+    pending.forEach(function(k){if(!params.has(k)){params.append(k,attr[k]); changed=true}});
+    if(!changed)return href;
+    var qs=params.toString();
+    return path+(qs?'?'+qs:'')+hash;
+  }
+  function stampCheckout(){
+    $$('a[href*="seguro.lancamentooculosnayma.com/r/"]').forEach(function(a){
+      var next=withAttr(a.getAttribute('href'));
+      if(next!==a.getAttribute('href'))a.setAttribute('href',next);
+    });
+  }
   function pick(k){
     if(k===cur)return;
     $$('[data-frames]').forEach(function(f){
@@ -21,7 +79,7 @@
     var prev=cur; setTimeout(function(){$$('[data-frames] img').forEach(function(im){if(im.dataset.k!==cur)im.classList.remove('out')})},900);
     $$('.sw,.sw-mini button').forEach(function(s){s.setAttribute('aria-pressed',s.dataset.k===k)});
     $$('[data-meta]').forEach(function(m){m.innerHTML=data[k].meta});
-    ['buyHero','buyClose','buyBar'].forEach(function(id){document.getElementById(id).href=data[k].url});
+    ['buyHero','buyClose','buyBar'].forEach(function(id){document.getElementById(id).href=withAttr(data[k].url)});
     document.querySelector('[data-buylabel]').textContent='Comprar '+data[k].name+' agora';
     document.querySelector('[data-barname]').textContent='Aviator '+data[k].name;
     hero.dataset.lens=k; root.dataset.lens=k; cur=k;
@@ -79,7 +137,7 @@
     vv.poster=s.src.replace('.mp4','.jpg'); vv.src=s.src; vv.currentTime=0; play(vv);
     viewer.querySelector('[data-vlabel]').textContent=s.label;
     viewer.querySelector('[data-vtitle]').textContent='Aviator '+d.name;
-    document.getElementById('vbuy').href=d.url;
+    document.getElementById('vbuy').href=withAttr(d.url);
     bars.forEach(function(b,j){b.style.width=j<i?'100%':'0%'});
     $$('.story')[i].classList.add('seen');
     prefetch(i+1);
@@ -121,7 +179,7 @@
     var tot=n*PRICE; document.getElementById('cartTotal').textContent=brl(tot);
     document.getElementById('cartInst').textContent=n?'ou 10x de '+brl(tot/10)+' sem juros':'Adicione uma cor para continuar';
     var go=document.getElementById('cartGo'), parts=ORDER.filter(function(k){return cart[k]}).map(function(k){return CODES[k]+':'+cart[k]});
-    if(parts.length){go.href=P+parts.join(','); go.removeAttribute('aria-disabled')} else {go.href='#'; go.setAttribute('aria-disabled','true')}
+    if(parts.length){go.href=withAttr(P+parts.join(',')); go.removeAttribute('aria-disabled')} else {go.href='#'; go.setAttribute('aria-disabled','true')}
     $$('[data-count]').forEach(function(b){ b.textContent=n; b.hidden=!n; if(bump&&n){b.classList.remove('bump'); void b.offsetWidth; b.classList.add('bump')} });
   }
   function openCart(){ lastF=document.activeElement; ov.hidden=false; requestAnimationFrame(function(){ov.classList.add('on')}); cartEl.classList.add('open'); cartEl.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; setTimeout(function(){cartEl.querySelector('.cart-x').focus()},50) }
@@ -149,7 +207,7 @@
   document.addEventListener('click',function(e){
     var ch=e.target.closest('[data-addchip]'); if(ch){ var m={}; m[ch.dataset.addchip]=1; px('AddToCart',evParams(m)); return }
     var a=e.target.closest('a[href*="seguro.lancamentooculosnayma.com/r/"]'); if(!a)return;
-    var map={}; a.getAttribute('href').split('/r/')[1].split(',').forEach(function(p){ var q=p.split(':'); ORDER.forEach(function(k){ if(CODES[k]===q[0]) map[k]=(+q[1]||1) }) });
+    var map={}; (a.getAttribute('href').split('/r/')[1]||'').split('?')[0].split('#')[0].split(',').forEach(function(p){ var q=p.split(':'); ORDER.forEach(function(k){ if(CODES[k]===q[0]) map[k]=(+q[1]||1) }) });
     px('InitiateCheckout',evParams(map));
   },true);
 
@@ -219,4 +277,12 @@
     bar.classList.toggle('show',y>innerHeight*.75&&c>innerHeight*.6);
   }
   addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  stampCheckout();
+  document.addEventListener('click',function(e){
+    var a=e.target.closest('a[href*="seguro.lancamentooculosnayma.com/r/"]');
+    if(!a)return;
+    var next=withAttr(a.getAttribute('href'));
+    if(next!==a.getAttribute('href'))a.setAttribute('href',next);
+  },true);
 })();
